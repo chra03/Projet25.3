@@ -1,0 +1,70 @@
+objectid,ref_tronc,nom_tronc,ligne1,ligne2,ligne3,nb_voie,type_voie,uic,st_length_s
+"3",BS-AGD,Béziers-Agde,Ligne littorale,,,"2",ligne électrifiée,"3",21142.0806680388
+"17",TES-AL,Tessonnières-Albi,Toulouse-Rodez,,,"1",ligne non électrifiée,7AV,16363.6480069231
+"16",TS-LD,Tarbes-Lourdes,Toulouse-Pau,,,"2",ligne électrifiée,"5",21201.8117969325
+"39",SST-TES,Saint Sulpice-Tessonnières,Toulouse-Rodez,Toulouse-Aurillac,,"1",ligne non électrifiée,"6",27362.9415464049
+"57",SVC-MAU,Séverac-Millau,Rodez-Millau,,,"1",ligne électrifiée,9AV,30968.0167919253
+"59",AL-RDZ,Albi-Rodez,Toulouse-Rodez,,,"1",ligne non électrifiée,8AV,83657.3844190059
+"22",MBN-AN,Montauban-Agen,Toulouse-Agen,,,"2",ligne électrifiée,"4",71816.2543627308
+"61",VR-FIG,Villefranche de Rouergue-Figeac,Toulouse-Aurillac,,,"1",ligne non électrifiée,8AV,35330.7451324878
+"64",MBN-CAH,Montauban-Cahors,Toulouse-Brive,,,"2",ligne électrifiée,"4",64354.6769363510
+"24",SJY-MBN,Saint Jory-Montauban,Toulouse-Brive,Toulouse-Agen,,"2",ligne électrifiée,"3",35238.8938322510
+"25",TCN-AV,Tarascon-Avignon,Ligne littorale,,,"2",ligne électrifiée,"3",21806.7990117069
+"32",LBS-LGG,La Bastide-Langogne,Nîmes-Clermont Ferrand,,,"1",ligne non électrifiée,9AV,20171.4553617399
+"44",MTJ-TS,Montréjeau-Tarbes,Toulouse-Pau,,,"2",ligne électrifiée,"5",53473.7185966193
+"68",TE-SST,Toulouse-Saint Sulpice,Toulouse-Rodez,Toulouse-Mazamet,Toulouse-Aurillac,"1",ligne non électrifiée,"6",30805.9743810998
+"69",SDM-AC,Saint Denis près Martel-Aurillac,Saint Denis près Martel-Aurillac,,,"1",ligne non électrifiée,9AV,75652.1760396836
+"13",PSS-MET,Portet Saint Simon-Muret,Toulouse-Pau,,,"2",ligne électrifiée,"5",9715.9452905675
+"27",BED-MAU,Bédarieux-Millau,Béziers-Clermont Ferrand,,,"1",ligne électrifiée,9AV,76654.0580436158
+"31",GNC-LBS,Génolhac-La Bastide,Nîmes-Clermont Ferrand,,,"1",ligne non électrifiée,9AV,33616.4474186465
+"33",LGG-CLE,Langogne-Clermont Ferrand,Nîmes-Clermont Ferrand,,,"1",ligne non électrifiée,9AV,168003.9476483023
+"46",PPN-VVB,Perpignan-Villefranche,Perpignan-Villefranche,,,"1",ligne électrifiée,8AV,46797.0155127875
+"49",BS-BED,Béziers-Bédarieux,Béziers-Clermont Ferrand,,,"1",ligne électrifiée,8AV,43119.5274721052
+"51",NI-TCN,Nîmes-Tarascon,Ligne littorale,,,"2",ligne électrifiée,"3",27644.1437879068
+"66",TE-CTY,Toulouse-Castelnaudary,Toulouse-Narbonne,,,"2",ligne électrifiée,"3",55302.0135212306
+"1",CTY-CCE,Castelnaudary-Carcassonne,Toulouse-Narbonne,,,"2",ligne électrifiée,"3",36175.4457607906
+"2",ALE-SLD,Alès-Salindres,Alès-Bessèges,,,"1",ligne non électrifiée,9SV,7513.9520453125
+"5",CCE-LMX,Carcassonne-Limoux,Carcassonne-Quillan,,,"1",ligne non électrifiée,9AV,26415.8955563144
+"18",TE-SJY,Toulouse-Saint Jory,Toulouse-Brive,Toulouse-Agen,,"4",ligne électrifiée,"3",16121.9660320608
+"60",RDZ-FIG,Rodez-Figeac,Rodez-Brive,,,"1",ligne non électrifiée,8AV,73191.7392442787
+"23",NA-BS,Narbonne-Béziers,Ligne littorale,,,"2",ligne électrifiée,"3",26281.2897869393
+"30",FRM-LTL,Font Romeu-Latour de Carol,Train Jaune,,,"1",ligne électrifiée,9AV,27767.6944377375
+"36",MVJ-SYH,Marvejols-Saint Chély,Béziers-Clermont Ferrand,,,"1",ligne électrifiée,9AV,33012.2695985236
+"42",TES-VR,Tessonnières-Villefranche de Rouergue,Toulouse-Aurillac,,,"1",ligne non électrifiée,9AV,65381.1737317425
+"45",MTJ-BDL,Montréjeau-Luchon,Montréjeau-Luchon,,,"1",ligne non électrifiée,non ex,35983.0888502050
+"50",TCN-MSC,Tarascon-Marseille,Ligne littorale,,,"2",ligne électrifiée,"3",103023.0513713060
+"54",NI-ALE,Nîmes-Alès,Nîmes-Clermont Ferrand,,,"2",ligne non électrifiée,8AV,48962.6150210135
+"65",TE-COL,Toulouse-Colomiers,Toulouse-Auch,,,"1",ligne non électrifiée,8AV,17292.5443539839
+"8",LIJ-AH,L'Isle Jourdain-Auch,Toulouse-Auch,,,"1",ligne non électrifiée,8AV,48214.8226693933
+"6",CE-PPN,Cerbère-Perpignan,Ligne littorale,,,"2",ligne électrifiée,"5",42149.6601238373
+"9",MET-BSS,Muret-Boussens,Toulouse-Pau,,,"2",ligne électrifiée,"5",45686.1322439412
+"11",NI-VAT,Nîmes-Vauvert,Nîmes-Le Grau du Roi,,,"1",ligne non électrifiée,8AV,22012.3383031366
+"12",PMS-FX,Pamiers-Foix,Toulouse-Latour de Carol,,,"1",ligne électrifiée,"6",18260.3553210129
+"67",TE-PSS,Toulouse-Portet Saint Simon,Toulouse-Pau,Toulouse-Latour de Carol,,"2",ligne électrifiée,"5",12415.8181090166
+"21",LD-PAU,Lourdes-Pau,Toulouse-Pau,,,"2",ligne électrifiée,"5",38807.5442533062
+"62",FIG-BLG,Figeac-Brive,Rodez-Brive,,,"1",ligne non électrifiée,8AV,90603.4597130439
+"63",CAH-BLG,Cahors-Brive,Toulouse-Brive,,,"2",ligne électrifiée,"5",100605.9780492312
+"35",MVJ-MDE,Marvejols-Mende,Marvejols-La Bastide,,,"1",ligne non électrifiée,9AV,35359.1565174233
+"40",SLD-BSG,Salindres-Bessèges,Alès-Bessèges,,,"1",ligne non électrifiée,non ex,22717.0141587770
+"41",SVC-MVJ,Séverac-Marvejols,Béziers-Clermont Ferrand,,,"1",ligne électrifiée,9AV,40971.7659021805
+"48",AGD-STE,Agde-Sète,Ligne littorale,,,"2",ligne électrifiée,"3",23267.1289359727
+"53",VAT-LGR,Vauvert - Le Grau du Roi,Nîmes-Le Grau du Roi,,,"1",ligne non électrifiée,9AV,24251.5214183054
+"52",LUN-NI,Lunel-Nîmes,Ligne littorale,,,"2",ligne électrifiée,"3",27259.7533722262
+"14",SST-CT,Saint Sulpice-Castres,Toulouse-Mazamet,,,"1",ligne non électrifiée,8AV,56188.3922476671
+"7",CT-MZT,Castres-Mazamet,Toulouse-Mazamet,,,"1",ligne non électrifiée,8AV,19682.6863380683
+"15",STE-MPL,Sète-Montpellier,Ligne littorale,,,"2",ligne électrifiée,"3",27676.3280925297
+"4",BSS-MTJ,Boussens-Montréjeau,Toulouse-Pau,,,"2",ligne électrifiée,"5",38642.9995579987
+"10",NA-CCE,Narbonne-Carcassonne,Toulouse-Narbonne,,,"2",ligne électrifiée,"4",60011.0904877831
+"19",PSS-PMS,Portet Saint Simon-Pamiers,Toulouse-Latour de Carol,,,"1",ligne électrifiée,"6",53197.4286156814
+"20",COL-LIJ,Colomiers-L'Isle Jourdain,Toulouse-Auch,,,"1",ligne non électrifiée,8AV,24944.4141517317
+"58",RDZ-SVC,Rodez-Séverac,Rodez-Millau,,,"1",ligne non électrifiée,non ex,44736.6933343017
+"26",AX-LTL,Ax les Thermes-Latour de Carol,Toulouse-Latour de Carol,,,"1",ligne électrifiée,8AV,39541.0796874591
+"28",FIG-AC,Figeac-Aurillac,Toulouse-Aurillac,,,"1",ligne non électrifiée,8AV,64953.7317633167
+"29",FX-AX,Foix-Ax les Thermes,Toulouse-Latour de Carol,,,"1",ligne électrifiée,7AV,41957.2804258740
+"34",LMX-QUI,Limoux-Quillan,Carcassonne-Quillan,,,"1",ligne non électrifiée,non ex,28867.1585797483
+"37",MPL-LUN,Montpellier-Lunel,Ligne littorale,,,"2",ligne électrifiée,"3",23619.3987507737
+"38",SYH-CLE,Saint Chély-Clermont Ferrand,Béziers-Clermont Ferrand,,,"1",ligne électrifiée,9AV,163800.5504306178
+"43",VVB-FRM,Villefranche-Font Romeu,Train Jaune,,,"1",ligne électrifiée,9AV,35273.0642703632
+"47",PPN-NA,Perpignan-Narbonne,Ligne littorale,,,"2",ligne électrifiée,"4",65012.9748625116
+"55",ALE-GNC,Alès-Génolhac,Nîmes-Clermont Ferrand,,,"1",ligne non électrifiée,9AV,34309.3547651249
+"56",MDE-LBS,Mende-La Bastide,Marvejols-La Bastide,,,"1",ligne non électrifiée,9AV,46516.3452621266
