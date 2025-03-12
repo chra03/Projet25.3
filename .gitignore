@@ -2,3 +2,71 @@
 .Rhistory
 .RData
 .Ruserdata
+# Ignorer les fichiers et répertoires générés par R
+.Rproj.user/
+*.Rhistory
+*.Rapp.history
+.RData
+.Ruserdata
+*.rds
+*.Rdb
+*.RData
+.Rhistory
+.Rapp.history
+
+# Ignorer les fichiers temporaires RStudio
+*.Rproj
+*.Rproj.user
+
+# Ignorer les répertoires de cache de R
+*.RData
+*.Rds
+
+# Ignorer les fichiers de log de Python
+*.log
+
+# Ignorer les fichiers Python compilés
+*.pyc
+*.pyo
+__pycache__/
+
+# Ignorer les environnements virtuels Python
+venv/
+env/
+ENV/
+.venv/
+.virtualenv/
+pip-log.txt
+
+# Ignorer les fichiers de dépendances de Node.js
+node_modules/
+npm-debug.log
+yarn-error.log
+package-lock.json
+yarn.lock
+
+# Ignorer les fichiers Python et Node.js temporaires
+*.tmp
+*.bak
+*.swp
+*.swo
+*~
+
+# Ignorer les fichiers et répertoires générés par Jupyter Notebook
+.ipynb_checkpoints/
+*.ipynb
+
+# Ignorer les fichiers de cache et autres fichiers spécifiques
+.cache/
+*.DS_Store
+Thumbs.db
+
+# Ignorer les fichiers spécifiques aux systèmes d'exploitation
+*.swp
+*.swo
+
+# Ignorer les fichiers de configuration et de sauvegarde
+*.bak
+*.tmp
+
+gain.csv
