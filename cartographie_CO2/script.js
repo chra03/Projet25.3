@@ -26,11 +26,11 @@ const OCCITANIE_CITIES = [
 
 // Facteurs d'émission de CO2 en g/km par passager
 const CO2_FACTORS = {
-    train: 14,       // Train régional (TER, Intercités)
+    train: 24.44,       // Train régional (TER, Intercités)
                       
     bus: 68,         // Bus urbain
-    car_solo: 193,   // Voiture individuelle
-    car_shared: 96,  // Voiture partagée (2 personnes)
+    car_solo: 200,   // Voiture individuelle
+    car_shared: 320,  // Voiture partagée (2 personnes)
              // Marche
 };
 
