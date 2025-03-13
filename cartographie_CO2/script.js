@@ -6,6 +6,13 @@ let endMarker;
 let startLocation;
 let endLocation;
 let embedMode = false;
+// Ajouter ces variables globales
+let directionsService;
+let routeLines = [];
+// Variables pour la météo
+let weatherMarkers = [];
+let weatherVisible = false;
+let weatherData = {};
 
 // Définition du centre et des limites de la région Occitanie
 const OCCITANIE_CENTER = { lat: 43.8927, lng: 3.2828 };
@@ -18,16 +25,162 @@ const OCCITANIE_BOUNDS = {
 
 // Liste des villes principales d'Occitanie pour les suggestions
 const OCCITANIE_CITIES = [
-    "Montpellier", "Toulouse", "Nîmes", "Perpignan", "Béziers", 
-    "Albi", "Narbonne", "Tarbes", "Sète", "Carcassonne", 
-    "Rodez", "Castres", "Alès", "Montauban", "Cahors", 
-    "Millau", "Auch", "Mende", "Foix", "Lourdes"
-];
+    "Toulouse",
+    "Montpellier",
+    "Nîmes",
+    "Perpignan",
+    "Béziers",
+    "Montauban",
+    "Narbonne",
+    "Albi",
+    "Carcassonne",
+    "Sète",
+    "Castres",
+    "Tarbes",
+    "Alès",
+    "Colomiers",
+    "Agde",
+    "Tournefeuille",
+    "Muret",
+    "Lunel",
+    "Rodez",
+    "Blagnac",
+    "Frontignan",
+    "Millau",
+    "Auch",
+    "Castelnau-le-Lez",
+    "Cahors",
+    "Bagnols-sur-Cèze",
+    "Plaisance-du-Touch",
+    "Cugnaux",
+    "Mauguio",
+    "Lattes",
+    "Beaucaire",
+    "Balma",
+    "Gaillac",
+    "Pamiers",
+    "Lourdes",
+    "Castelsarrasin",
+    "Ramonville-Saint-Agne",
+    "Saint-Gilles",
+    "Castanet-Tolosan",
+    "Moissac",
+    "Graulhet",
+    "Canet-en-Roussillon",
+    "Onet-le-Château",
+    "Villefranche-de-Rouergue",
+    "Fonsorbes",
+    "Saint-Estève",
+    "Mende",
+    "Saint-Orens-de-Gameville",
+    "L'Union",
+    "Mèze",
+    "Villeneuve-lès-Avignon",
+    "Vauvert",
+    "Saint-Gaudens",
+    "Lézignan-Corbières",
+    "Castelnaudary",
+    "Lavaur",
+    "Juvignac",
+    "Saint-Jean",
+    "Saint-Cyprien",
+    "Argelès-sur-Mer",
+    "Saint-Laurent-de-la-Salanque",
+    "Pont-Saint-Esprit",
+    "Limoux",
+    "Mazamet",
+    "Castelginest",
+    "Saint-Gély-du-Fesc",
+    "Figeac",
+    "Cabestany",
+    "Portet-sur-Garonne",
+    "Foix",
+    "Villeneuve-lès-Maguelone",
+    "Revel",
+    "Carmaux",
+    "Auterive",
+    "Le Crès",
+    "Saint-Lys",
+    "Villeneuve-Tolosane",
+    "Saint-Jean-de-Védas",
+    "Pérols",
+    "Léguevin",
+    "Frouzins",
+    "Saint-Sulpice-la-Pointe",
+    "La Grande-Motte",
+    "Pia",
+    "Grenade",
+    "Rivesaltes",
+    "Clermont-l'Hérault",
+    "Elne",
+    "Seysses",
+    "Marguerittes",
+    "L'Isle-Jourdain",
+    "Uzès",
+    "Le Grau-du-Roi",
+    "Les Angles",
+    "Aigues-Mortes",
+    "Pibrac",
+    "Launaguet",
+    "Saint-Affrique",
+    "Pézenas",
+    "Aucamville",
+    "La Salvetat-Saint-Gilles",
+    "Grabels",
+    "Aureilhan",
+    "Marseillan",
+    "Céret",
+    "Le Soler",
+    "Bagnères-de-Bigorre",
+    "Rochefort-du-Gard",
+    "Lodève",
+    "Thuir",
+    "Bompas",
+    "Baillargues",
+    "Saint-Christol-lez-Alès",
+    "Aussonne",
+    "Sérignan",
+    "Balaruc-les-Bains",
+    "Bellegarde",
+    "Caussade",
+    "Saint-Juéry",
+    "Jacou",
+    "Fabrègues",
+    "Manduel",
+    "Condom",
+    "Toulouges",
+    "Pignan",
+    "Labruguière",
+    "Cornebarrieu",
+    "Escalquens",
+    "Gigean",
+    "Saint-Girons",
+    "Bouillargues",
+    "Montech",
+    "Marsillargues",
+    "Lavelanet",
+    "Beauzelle",
+    "Fleurance",
+    "Palavas-les-Flots",
+    "Vendargues",
+    "Castelnau-d'Estrétefonds",
+    "Laudun-l'Ardoise",
+    "Aussillon",
+    "Castries",
+    "Prades",
+    "Poussan",
+    "Eaunes",
+    "Saint-Alban",
+    "Bédarieux",
+    "Gignac",
+    "Luc-la-Primaube",
+    "Fronton"
+  ];
 
 // Facteurs d'émission de CO2 en g/km par passager
 const CO2_FACTORS = {
     train: 24.44,       // Train régional (TER, Intercités)
-                      
+
     bus: 68,         // Bus urbain
     car_solo: 200,   // Voiture individuelle
     car_shared: 320,  // Voiture partagée (2 personnes)
@@ -340,28 +493,27 @@ function generateCO2EmissionsHTML(distanceKm) {
 
 // Fonction pour afficher l'itinéraire avec Maps Embed API
 // Remplacez la fonction showEmbeddedDirections par celle-ci
-function showEmbeddedDirections() {
+// Modifiez la fonction showEmbeddedDirections
+async function showEmbeddedDirections() {
     console.log("Recherche d'itinéraire...");
     
     // Afficher le spinner de chargement
     document.getElementById('loading').style.display = 'block';
     
     // Vérifier si les lieux ont été correctement sélectionnés
-    if (!startLocation) {
+    if (!startLocation || !endLocation) {
         document.getElementById('loading').style.display = 'none';
-        document.getElementById('results').innerHTML = '<div class="error">Veuillez sélectionner un lieu de départ.</div>';
-        return;
-    }
-
-    if (!endLocation) {
-        document.getElementById('loading').style.display = 'none';
-        document.getElementById('results').innerHTML = '<div class="error">Veuillez sélectionner une destination.</div>';
+        document.getElementById('results').innerHTML = '<div class="error">Veuillez sélectionner un lieu de départ et une destination.</div>';
         return;
     }
 
     // Calculer la distance approximative entre les deux points
     const distanceKm = calculateDistance(startLocation, endLocation);
     console.log("Distance calculée :", distanceKm, "km");
+    
+    // Obtenir la recommandation de transport
+    const recommendation = await recommendTransportMode(startLocation, endLocation);
+    console.log("Recommandation:", recommendation);
 
     // Convertir les coordonnées en chaînes de caractères
     const startStr = startLocation.lat() + ',' + startLocation.lng();
@@ -386,7 +538,7 @@ function showEmbeddedDirections() {
                     src="https://www.google.com/maps/embed/v1/directions?key=AIzaSyAfFOJwfawxLAW38yATY7MSTI2ikioEMPE
                         &origin=${encodeURIComponent(startStr)}
                         &destination=${encodeURIComponent(endStr)}
-                        &mode=transit"
+                        &mode=${recommendation.mode}"
                     allowfullscreen>
                 </iframe>
             `;
@@ -396,18 +548,39 @@ function showEmbeddedDirections() {
             
             // Générer le HTML pour les émissions de CO2
             const co2HTML = generateCO2EmissionsHTML(distanceKm);
-            console.log("HTML des émissions de CO2 généré");
             
             // Afficher les résultats
             const resultsDiv = document.getElementById('results');
             resultsDiv.innerHTML = '';
             
-            // Créer et ajouter le résumé de l'itinéraire
+            // Créer et ajouter le résumé de l'itinéraire avec la recommandation
             const routeSummary = document.createElement('div');
             routeSummary.className = 'route-summary';
+            
+            // Ajouter les informations météo et la recommandation
+            // Ajouter les informations météo et la recommandation
+            const weatherHTML = `
+            <div class="weather-info">
+                <h3>Conditions météo actuelles</h3>
+                <div class="weather-details">
+                    <img src="https:${recommendation.weather.icon}" alt="${recommendation.weather.condition}">
+                    <div>
+                        <p>${recommendation.weather.condition}</p>
+                        <p>${recommendation.weather.temperature}°C, vent: ${recommendation.weather.wind} km/h</p>
+                    </div>
+                </div>
+                <div class="recommendation">
+                    <h4>Recommandation</h4>
+                    <p>Mode de transport recommandé: <strong>${getTransportModeName(recommendation.mode)}</strong></p>
+                    <p>${recommendation.reason}</p>
+                </div>
+            </div>
+            `;
+            
             routeSummary.innerHTML = `
                 <p>Itinéraire de <strong>${startAddress}</strong> à <strong>${endAddress}</strong></p>
                 <p>Distance approximative: <strong>${distanceKm.toFixed(1)} km</strong></p>
+                ${weatherHTML}
                 <p>Consultez la carte pour les détails de l'itinéraire.</p>
             `;
             
@@ -431,12 +604,21 @@ function showEmbeddedDirections() {
             
             // Ajouter la section des émissions de CO2 à la div des résultats
             resultsDiv.appendChild(co2Section.firstElementChild);
-            
-            console.log("Affichage des résultats terminé");
         });
     });
 }
 
+// Fonction pour obtenir le nom lisible du mode de transport
+function getTransportModeName(mode) {
+    const modes = {
+        'transit': 'Transports en commun',
+        'driving': 'Voiture',
+        'walking': 'Marche à pied',
+        'bicycling': 'Vélo',
+        'train': 'Train'
+    };
+    return modes[mode] || mode;
+}
 // Fonction pour réinitialiser la carte
 function resetMap() {
     // Recréer la carte
@@ -607,3 +789,93 @@ window.receiveFromShiny = function(command, params) {
             break;
     }
 };
+//##################
+
+
+// Fonction pour récupérer les données météo
+async function getWeatherData(lat, lng) {
+    const apiKey = 'af48c02926354057aa3130845251301';
+    const url = `https://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${lat},${lng}&aqi=no`;
+    
+    try {
+        const response = await fetch(url);
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error('Erreur lors de la récupération des données météo:', error);
+        return null;
+    }
+}
+
+// Fonction pour recommander un mode de transport basé sur la météo et la distance
+async function recommendTransportMode(startLoc, endLoc) {
+    // Calculer la distance
+    const distanceKm = calculateDistance(startLoc, endLoc);
+    
+    // Récupérer la météo au point de départ
+    const weatherData = await getWeatherData(startLoc.lat(), startLoc.lng());
+    
+    if (!weatherData) return { mode: 'transit', reason: 'Données météo non disponibles' };
+    
+    const condition = weatherData.current.condition.text.toLowerCase();
+    const tempC = weatherData.current.temp_c;
+    const windKph = weatherData.current.wind_kph;
+    const isRaining = condition.includes('rain') || condition.includes('drizzle');
+    const isSnowing = condition.includes('snow') || condition.includes('sleet');
+    const isFoggy = condition.includes('fog') || condition.includes('mist');
+    
+    // Logique de recommandation
+    let recommendedMode = 'transit'; // Par défaut: transports en commun
+    let reason = '';
+    
+    // Pour les courtes distances
+    if (distanceKm <= 2) {
+        if (isRaining || isSnowing) {
+            recommendedMode = 'transit';
+            reason = 'Précipitations détectées - restez au sec';
+        } else if (tempC > 30) {
+            recommendedMode = 'transit';
+            reason = 'Température élevée - évitez l\'effort physique';
+        } else {
+            recommendedMode = 'walking';
+            reason = 'Distance courte et météo favorable';
+        }
+    } 
+    // Pour les distances moyennes
+    else if (distanceKm <= 10) {
+        if (isRaining || isSnowing || windKph > 30) {
+            recommendedMode = 'transit';
+            reason = 'Conditions météo défavorables';
+        } else if (isFoggy) {
+            recommendedMode = 'transit';
+            reason = 'Visibilité réduite';
+        } else {
+            recommendedMode = 'transit';
+            reason = 'Distance moyenne et météo favorable';
+        }
+    } 
+    // Pour les longues distances
+    else {
+        if (isSnowing || isFoggy || windKph > 50) {
+            recommendedMode = 'train';
+            reason = 'Conditions météo difficiles - privilégiez le train';
+        } else if (isRaining) {
+            recommendedMode = 'transit';
+            reason = 'Pluie détectée - transports en commun recommandés';
+        } else {
+            recommendedMode = 'transit';
+            reason = 'Longue distance';
+        }
+    }
+    
+    return { 
+        mode: recommendedMode, 
+        reason: reason,
+        weather: {
+            condition: weatherData.current.condition.text,
+            temperature: tempC,
+            wind: windKph,
+            icon: weatherData.current.condition.icon
+        }
+    };
+}
