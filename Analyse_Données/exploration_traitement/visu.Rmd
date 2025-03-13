@@ -1,0 +1,427 @@
+---
+title: "Untitled"
+output: html_document
+date: "2025-03-11"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+# Charger les bibliothèques nécessaires
+library(readxl)   # Pour lire les fichiers Excel
+library(dplyr)    # Pour manipuler les données
+library(ggplot2)  # Pour la visualisation
+
+# Charger le fichier Excel
+xls <- excel_sheets("WE 1€ 2024modif.xlsx")
+print(paste("Feuilles disponibles :", xls))
+
+# Créer des listes pour stocker les résultats
+```
+
+
+```{r}
+top_destinations <- list()
+
+# Parcourir chaque feuille (chaque mois) pour analyser les destinations favorites
+for (sheet in xls) {
+  # Charger la feuille
+  df <- read_excel("WE 1€ 2024modif.xlsx", sheet = sheet)
+  
+  # Nettoyer les données : supprimer les lignes où "Parcours" est manquant
+  df_clean <- df %>% filter(!is.na(Parcours))
+  
+  # Extraire les destinations (gares d'arrivée) de la colonne "Parcours"
+  df_clean$Destination <- sapply(strsplit(df_clean$Parcours, " - "), `[`, 2)
+  
+  # Objectif #1 : Destinations favorites selon les mois (les 10 destinations les plus populaires)
+  top_dest <- df_clean %>% count(Destination) %>% top_n(10)
+  top_destinations[[sheet]] <- top_dest
+  
+  # Affichage des résultats
+  print(paste("Top 10 destinations pour", sheet))
+  print(top_dest)
+  
+  # Visualisation des 10 meilleures destinations pour chaque mois
+  ggplot(top_dest, aes(x = reorder(Destination, n), y = n, fill = Destination)) +
+    geom_bar(stat = "identity", show.legend = FALSE) +  # Hide legend
+    coord_flip() +
+    labs(title = paste("Top 10 destinations pour le mois de", sheet),
+         x = "Destination",
+         y = "Nombre de voyages") +
+    theme_minimal() +
+    theme(
+      plot.title = element_text(hjust = 0.5, size = 14, face = "bold"),  # Centre le titre et l'agrandit
+      axis.title = element_text(size = 12),  # Agrandit les titres des axes
+      axis.text = element_text(size = 10)  # Agrandit les textes des axes
+    )
+  
+  # Affichage du graphique
+  print(ggplot(top_dest, aes(x = reorder(Destination, n), y = n, fill = Destination)) +
+          geom_bar(stat = "identity", show.legend = FALSE) +
+          coord_flip() +
+          labs(title = paste("Top 10 destinations pour le mois de", sheet),
+               x = "Destination",
+               y = "Nombre de voyages") +
+          theme_minimal())
+}
+```
+
+
+
+```{r}
+# Charger les bibliothèques nécessaires
+library(readxl)  # Pour lire les fichiers Excel
+library(dplyr)   # Pour manipuler les données
+library(ggplot2) # Pour la visualisation
+
+# Charger le fichier Excel
+df <- read_excel("WE 1€ 2024modif.xlsx", sheet = "Janvier")
+
+# Voir un aperçu des données
+head(df)
+
+# Nettoyer les données : supprimer les lignes où "Parcours" est manquant
+df_clean <- df %>% filter(!is.na(Parcours))
+
+# Extraire les destinations (gares d'arrivée) de la colonne "Parcours"
+df_clean$Destination <- sapply(strsplit(df_clean$Parcours, " - "), `[`, 2)
+
+# Calculer les statistiques descriptives pour les top 10 destinations
+top_dest <- df_clean %>% count(Destination) %>% top_n(10)
+
+# Statistiques descriptives
+top_dest_data <- df_clean %>% filter(Destination %in% top_dest$Destination)
+
+# Calcul des statistiques descriptives sur la colonne "Poids de voyages" pour ces destinations
+desc_stats <- top_dest_data %>%
+  group_by(Destination) %>%
+  summarise(
+    Min = min(Poids.de.voyages, na.rm = TRUE),
+    Max = max(Poids.de.voyages, na.rm = TRUE),
+    Mean = mean(Poids.de.voyages, na.rm = TRUE),
+    Median = median(Poids.de.voyages, na.rm = TRUE),
+    SD = sd(Poids.de.voyages, na.rm = TRUE)
+  )
+
+# Affichage des statistiques descriptives
+print(desc_stats)
+
+# Créer un boxplot pour le "Poids de voyages" des top 10 destinations pour le mois de janvier
+ggplot(top_dest_data, aes(x = Destination, y = Poids.de.voyages, fill = Destination)) +
+  geom_boxplot() +
+  labs(title = "Boxplot du Poids des voyages pour les Top 10 Destinations de Janvier",
+       x = "Destination",
+       y = "Poids de voyages") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))  # Rotation des étiquettes des axes X pour lisibilité
+
+```
+
+
+
+
+```{r}
+# Charger les bibliothèques nécessaires
+library(readxl)   # Pour lire les fichiers Excel
+library(dplyr)    # Pour manipuler les données
+library(ggplot2)  # Pour la visualisation
+library(RColorBrewer)  # Pour générer une palette de couleurs
+
+# Charger le fichier Excel
+xls <- excel_sheets("WE 1€ 2024modif.xlsx")
+print(paste("Feuilles disponibles :", xls))
+
+# Créer des listes pour stocker les résultats
+top_destinations <- list()
+
+# Créer une palette de couleurs
+colors <- brewer.pal(10, "Set3")  # Choisir une palette avec 10 couleurs distinctes
+
+# Parcourir chaque feuille (chaque mois) pour analyser les destinations favorites
+for (sheet in xls) {
+  # Charger la feuille
+  df <- read_excel("WE 1€ 2024modif.xlsx", sheet = sheet)
+  
+  # Nettoyer les données : supprimer les lignes où "Parcours" est manquant
+  df_clean <- df %>% filter(!is.na(Parcours))
+  
+  # Extraire les destinations (gares d'arrivée) de la colonne "Parcours"
+  df_clean$Destination <- sapply(strsplit(df_clean$Parcours, " - "), `[`, 2)
+  
+  # Objectif #1 : Destinations favorites selon les mois (les 10 destinations les plus populaires)
+  top_dest <- df_clean %>% count(Destination) %>% top_n(10)
+  top_destinations[[sheet]] <- top_dest
+  
+  # Assigner une couleur unique pour chaque destination
+  top_dest$Color <- colors[1:nrow(top_dest)]  # Assigner une couleur différente pour chaque destination
+  
+  # Visualisation des 10 meilleures destinations pour chaque mois
+  ggplot(top_dest, aes(x = reorder(Destination, n), y = n, fill = Color)) +
+    geom_bar(stat = "identity", show.legend = FALSE) +  # Hide legend
+    coord_flip() +
+    labs(title = paste("Top 10 destinations pour le mois de", sheet),
+         x = "Destination",
+         y = "Nombre de voyages") +
+    theme_minimal() +
+    theme(
+      plot.title = element_text(hjust = 0.5, size = 14, face = "bold"),  # Centre le titre et l'agrandit
+      axis.title = element_text(size = 12),  # Agrandit les titres des axes
+      axis.text = element_text(size = 10)  # Agrandit les textes des axes
+    )
+  
+  # Affichage du graphique
+  print(ggplot(top_dest, aes(x = reorder(Destination, n), y = n, fill = Color)) +
+          geom_bar(stat = "identity", show.legend = FALSE) +
+          coord_flip() +
+          labs(title = paste("Top 10 destinations pour le mois de", sheet),
+               x = "Destination",
+               y = "Nombre de voyages") +
+          theme_minimal())
+}
+
+```
+
+
+```{r}
+# Charger les bibliothèques nécessaires
+library(readxl)   # Pour lire les fichiers Excel
+library(dplyr)    # Pour manipuler les données
+library(ggplot2)  # Pour la visualisation
+
+# Charger le fichier Excel
+xls <- excel_sheets("WE 1€ 2024modif.xlsx")
+print(paste("Feuilles disponibles :", xls))
+
+# Créer des listes pour stocker les résultats
+top_destinations <- list()
+```
+
+
+
+```{r}
+# Charger les bibliothèques nécessaires
+library(dplyr)
+library(ggplot2)
+library(tidyr)
+
+# Charger les fichiers ODS pour 2023 et 2024
+data_2023 <- read_ods("MDW2023.ods")  # Remplacer par le nom de la feuille si nécessaire
+data_2024 <- read_ods("MDW2024.ods")  # Remplacer par le nom de la feuille si nécessaire
+
+# Organiser les données pour 2023
+data_long_2023 <- data_2023 %>%
+  pivot_longer(cols = c("+=0", "+=Flex", "+=-"), names_to = "Categorie", values_to = "Nombre_de_voyages") %>%
+  mutate(Tranche_age = case_when(
+    Categorie == "+=0" ~ "12-26 ans",
+    Categorie == "+=Flex" ~ "27-59 ans",
+    Categorie == "+=-" ~ "60 ans et plus",
+    TRUE ~ "Autre"
+  ),
+  Annee = "2023")  # Ajouter la colonne année
+
+# Organiser les données pour 2024
+data_long_2024 <- data_2024 %>%
+  pivot_longer(cols = c("+=0", "+=Flex", "+=-"), names_to = "Categorie", values_to = "Nombre_de_voyages") %>%
+  mutate(Tranche_age = case_when(
+    Categorie == "+=0" ~ "12-26 ans",
+    Categorie == "+=Flex" ~ "27-59 ans",
+    Categorie == "+=-" ~ "60 ans et plus",
+    TRUE ~ "Autre"
+  ),
+  Annee = "2024")  # Ajouter la colonne année
+
+# Combiner les données de 2023 et 2024
+data_combined <- bind_rows(data_long_2023, data_long_2024)
+
+# Assigner l'ordre des catégories
+data_combined$Categorie <- factor(data_combined$Categorie, levels = c("+=0", "+=Flex", "+=-"))
+
+# Visualisation des voyages par catégorie pour 2023 et 2024
+ggplot(data_combined, aes(x = Categorie, y = Nombre_de_voyages, fill = Annee)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  scale_fill_manual(values = c("2023" = "red", "2024" = "yellow")) +  # Choisir des couleurs spécifiques pour 2023 et 2024
+  labs(title = "Nombre de voyages selon les catégories pour 2023 et 2024",
+       x = "Catégorie",
+       y = "Nombre de voyages",
+       fill = "Année") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+```
+
+
+```{r}
+# Charger les bibliothèques nécessaires
+library(dplyr)
+library(ggplot2)
+library(readODS)  # Pour lire les fichiers ODS
+
+# Charger le fichier ODS
+data <- read_ods("MDW2023.ods")  # Remplacer par le nom de la feuille si nécessaire
+
+# Voir un aperçu des données
+head(data)
+
+# Reorganiser les données pour les catégories Fréquents et Occasionnels
+# Ici, les valeurs des colonnes sont associées à ces deux catégories
+data_long <- data %>%
+  pivot_longer(cols = c("Fréquents", "Occasionnels"), names_to = "Categorie", values_to = "Nombre_de_voyages")
+
+# Vérifier la structure des données transformées
+head(data_long)
+
+# Visualisation des voyages par catégorie
+ggplot(data_long, aes(x = Categorie, y = Nombre_de_voyages, fill = Categorie)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  labs(title = "Nombre de voyages par catégorie pour 2023",
+       x = "Catégorie",
+       y = "Nombre de voyages",
+       fill = "Catégorie") +
+  theme_minimal()
+
+```
+```{r}
+# Charger les bibliothèques nécessaires
+library(dplyr)
+library(ggplot2)
+library(readODS)  # Pour lire les fichiers ODS
+
+# Charger le fichier ODS
+data <- read_ods("MDW2024.ods")  # Remplacer par le nom de la feuille si nécessaire
+
+# Voir un aperçu des données
+head(data)
+
+# Reorganiser les données pour les catégories Fréquents et Occasionnels
+# Ici, les valeurs des colonnes sont associées à ces deux catégories
+data_long <- data %>%
+  pivot_longer(cols = c("Fréquents", "Occasionnels"), names_to = "Categorie", values_to = "Nombre_de_voyages")
+
+# Vérifier la structure des données transformées
+head(data_long)
+
+# Visualisation des voyages par catégorie
+ggplot(data_long, aes(x = Categorie, y = Nombre_de_voyages, fill = Categorie)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  labs(title = "Nombre de voyages par catégorie pour 2024",
+       x = "Catégorie",
+       y = "Nombre de voyages",
+       fill = "Catégorie") +
+  theme_minimal()
+
+```
+
+
+```{r}
+# Charger les bibliothèques nécessaires
+library(dplyr)
+library(lubridate)  # Pour une gestion plus facile des dates
+
+# Nettoyer la colonne 'MOIS' et convertir en format Date
+data_clean$MOIS <- as.factor(data_clean$MOIS)
+
+# Créer une fonction pour convertir le mois en format numérique
+mois_num <- c("Janvier" = 1, "Février" = 2, "Mars" = 3, "Avril" = 4, "Mai" = 5, "Juin" = 6, 
+              "Juillet" = 7, "Août" = 8, "Septembre" = 9, "Octobre" = 10, "Novembre" = 11, "Décembre" = 12)
+
+# Ajouter l'année et convertir le mois en numérique
+data_clean$Mois_Num <- mois_num[as.character(data_clean$MOIS)]
+
+# Créer la colonne 'Date' en combinant 'Mois_Num' et 'MILLESIME'
+data_clean$Date <- as.Date(paste(data_clean$MILLESIME, data_clean$Mois_Num, "01", sep = "-"), format = "%Y-%m-%d")
+
+# Voir un aperçu des données
+head(data_clean)
+
+```
+
+```{r}
+# Charger les bibliothèques nécessaires
+library(forecast)  # Pour ARIMA et prévision
+library(dplyr)
+library(lubridate) # Pour travailler avec les dates
+
+# Charger le fichier
+data <- read_csv2("voyages.csv")  # Remplace par le nom de ton fichier
+
+# Créer un vecteur pour mapper les mois en chiffres
+mois_num <- c("Janvier" = 1, "Février" = 2, "Mars" = 3, "Avril" = 4, "Mai" = 5, "Juin" = 6,
+              "Juillet" = 7, "Août" = 8, "Septembre" = 9, "Octobre" = 10, "Novembre" = 11, "Décembre" = 12)
+
+# Convertir la colonne 'MOIS' en mois numérique
+data$Mois_num <- mois_num[data$MOIS]
+
+# Créer une colonne 'Date' en combinant 'MILLESIME' (année) et 'Mois_num' (mois)
+data$Date <- as.Date(paste(data$MILLESIME, data$Mois_num, "01", sep = "-"), format = "%Y-%m-%d")
+
+# Vérifier si la conversion a fonctionné
+head(data)
+
+# Regrouper les données par mois et année
+data_clean <- data %>%
+  group_by(Date) %>%
+  summarise(Nombre_de_voyages = sum(NB_PERS, na.rm = TRUE))
+
+# Créer une série temporelle avec les données de janvier 2023 à décembre 2024
+ts_data <- ts(data_clean$Nombre_de_voyages, frequency = 12, start = c(2023, 1), end = c(2024, 12))
+
+# Ajuster un modèle ARIMA
+fit_arima <- auto.arima(ts_data)
+
+# Faire la prévision pour 12 mois (2025)
+forecast_data <- forecast(fit_arima, h = 12)
+
+# Visualisation des prévisions pour 2025
+plot(forecast_data, main = "Prévision des voyages pour 2025", ylab = "Nombre de voyages", xlab = "Mois", xaxt = "n")
+
+# Ajuster les labels de l'axe des X pour couvrir janvier 2023 à décembre 2025
+axis(1, at = 1:24, labels = c(format(seq(as.Date("2023-01-01"), by = "month", length.out = 24), "%b %Y"), 
+                              format(seq(as.Date("2025-01-01"), by = "month", length.out = 12), "%b %Y")))
+```
+```{r}
+# Charger les bibliothèques nécessaires
+library(forecast)  # Pour ARIMA et prévision
+library(dplyr)
+library(lubridate) # Pour travailler avec les dates
+
+# Charger le fichier
+data <- read_csv2("voyages.csv")  # Remplace par le nom de ton fichier
+
+# Créer un vecteur pour mapper les mois en chiffres
+mois_num <- c("Janvier" = 1, "Février" = 2, "Mars" = 3, "Avril" = 4, "Mai" = 5, "Juin" = 6,
+              "Juillet" = 7, "Août" = 8, "Septembre" = 9, "Octobre" = 10, "Novembre" = 11, "Décembre" = 12)
+
+# Convertir la colonne 'MOIS' en mois numérique
+data$Mois_num <- mois_num[data$MOIS]
+
+# Créer une colonne 'Date' en combinant 'MILLESIME' (année) et 'Mois_num' (mois)
+data$Date <- as.Date(paste(data$MILLESIME, data$Mois_num, "01", sep = "-"), format = "%Y-%m-%d")
+
+# Vérifier si la conversion a fonctionné
+head(data)
+
+# Regrouper les données par mois et année
+data_clean <- data %>%
+  group_by(Date) %>%
+  summarise(Nombre_de_voyages = sum(NB_PERS, na.rm = TRUE))
+
+# Créer une série temporelle avec les données de janvier 2023 à décembre 2024
+ts_data <- ts(data_clean$Nombre_de_voyages, frequency = 12, start = c(2023, 1), end = c(2024, 12))
+
+# Ajuster un modèle Naïve saisonnier (Seasonal Naive)
+fit_seasonal_naive <- snaive(ts_data, h = 12)  # Prévision pour 12 mois (2025)
+
+# Visualisation des prévisions pour 2025
+plot(fit_seasonal_naive, main = "Prévision des voyages pour 2025 avec le modèle Naïve Saisonier", 
+     ylab = "Nombre de voyages", xlab = "Mois", xaxt = "n")
+
+# Ajuster les labels de l'axe des X pour couvrir janvier 2023 à décembre 2025
+x_labels <- c(format(seq(as.Date("2023-01-01"), by = "month", length.out = 24), "%b %Y"), 
+              format(seq(as.Date("2025-01-01"), by = "month", length.out = 12), "%b %Y"))
+
+axis(1, at = 1:36, labels = x_labels, las = 2, cex.axis = 0.8)
+
+```
