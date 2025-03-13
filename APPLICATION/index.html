@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transports en Occitanie</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="sidebar">
+        <h1>Transports en Occitanie</h1>
+        
+        <div class="search-box">
+            <div class="form-group">
+                <label for="start-point">Lieu de départ</label>
+                <div class="input-container">
+                    <input type="text" id="start-point" placeholder="Saisissez votre point de départ">
+                    <div id="start-suggestions" class="suggestions"></div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="end-point">Destination</label>
+                <div class="input-container">
+                    <input type="text" id="end-point" placeholder="Saisissez votre destination">
+                    <div id="end-suggestions" class="suggestions"></div>
+                </div>
+            </div>
+            
+            <button id="find-route" class="btn">Rechercher un itinéraire</button>
+            
+            <div class="instructions">
+                Vous pouvez également cliquer directement sur la carte pour sélectionner votre point de départ et votre destination.
+            </div>
+        </div>
+        
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>Recherche de l'itinéraire en cours...</p>
+        </div>
+        
+        <div id="results">
+            <p>Saisissez un lieu de départ et une destination pour afficher les itinéraires en transport en commun.</p>
+        </div>
+    </div>
+    
+    <div class="map-container">
+        <div id="map"></div>
+    </div>
+
+    <!-- Google Maps API -->
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAHwI4z6hB5uHljtx5ebISmTu5N2z9utYI&callback=initApp"></script>
+    
+    <!-- Script JavaScript -->
+    <!-- À la fin du body, juste avant </body> -->
+ 
+<script src="script.js"></script>
+</body>
+</html>
