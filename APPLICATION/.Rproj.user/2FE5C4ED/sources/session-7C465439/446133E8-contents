@@ -1,0 +1,79 @@
+install.packages(c("tidyverse", "lubridate", "forecast", "tsibble", "fable", "ggplot2"))
+library(tidyverse)
+library(lubridate)
+library(forecast)
+library(tsibble)
+library(fable)
+library(ggplot2)
+#install.packages("dplyr")
+library(dplyr)
+
+
+#df <- read.csv('voyages.csv',sep=",")
+df <- read.csv(file.choose(), sep=";",fileEncoding = "latin1" )
+
+library(forecast)
+library(tseries)
+
+
+fichier <- file.choose()
+
+# Lire la première feuille
+df <- read_csv(fichier)
+head(df)
+# Convertir les données en série temporelle
+ts_voyageurs <- ts(df_time_voyageurs, frequency = 12, start = c(2023,1))
+
+# Ajuster un modèle SARIMA
+model_sarima <- auto.arima(ts_voyageurs, seasonal=TRUE)
+
+# Prédiction pour les 12 prochains mois
+forecast_sarima <- forecast(model_sarima, h=12)
+
+# Visualisation
+autoplot(forecast_sarima) + ggtitle("Prévision des flux de voyageurs") + theme_minimal()
+
+#####
+
+# Nettoyage des nombres avec des virgules
+#df <- df %>% mutate(across(c(NB_PERS, Poids_voyages, KCO2_TER_km_tot, KCO2_Voit_km_tot, ECO_CO2_km_pers), ~ as.numeric(gsub(",", ".", .))))
+
+df <- df %>%
+  mutate(across(c(NB_PERS, Poids_voyages, KCO2_TER_km_tot, KCO2_Voit_km_tot, ECO_CO2_km_pers),
+                ~ as.numeric(gsub(",", ".", .))))
+
+# Conversion des mois en anglais (nécessaire pour conversion en date)
+mois_fr_en <- c("Janvier"="January", "Février"="February", "Mars"="March", "Avril"="April",
+                "Mai"="May", "Juin"="June", "Juillet"="July", "Août"="August",
+                "Septembre"="September", "Octobre"="October", "Novembre"="November", "Décembre"="December")
+
+df$MOIS_EN <- mois_fr_en[df$MOIS]
+
+# Création d'une colonne date pour l'analyse temporelle
+df$DATE <- as.Date(paste(df$MILLESIME, df$MOIS_EN, "01", sep="-"), format="%Y-%B-%d")
+
+# Séparer latitude/longitude pour le départ et l'arrivée
+#df <- df %>%
+#  separate(Geom_depart, into=c("latitude_depart", "longitude_depart"), sep=", ", convert=TRUE) %>%
+#  separate(Geom_arrivee, into=c("latitude_arrivee", "longitude_arrivee"), sep=", ", convert=TRUE)
+
+# Vérifier les données après nettoyage
+
+library(ggplot2)
+
+ggplot(df, aes(x=NB_PERS)) +
+  geom_histogram(fill="steelblue", bins=20) +
+  labs(title="Répartition du nombre de passagers par trajet", x="Nombre de passagers", y="Fréquence") +
+  theme_minimal()
+
+install.packages("GGally")
+
+library(GGally)
+
+# Sélection des variables pertinentes
+df_corr <- df[, c("NB_PERS", "KCO2_TER_km_tot", "KCO2_Voit_km_tot", "ECO_CO2_km_pers")]
+
+# Matrice de corrélation
+ggcorr(df_corr, label = TRUE) + ggtitle("Matrice de corrélation")
+
+

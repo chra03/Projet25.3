@@ -1,27 +1,3 @@
-.Rproj.user
-.Rhistory
-.RData
-.Ruserdata
-# Ignorer les fichiers et répertoires générés par R
-.Rproj.user/
-*.Rhistory
-*.Rapp.history
-.RData
-.Ruserdata
-*.rds
-*.Rdb
-*.RData
-.Rhistory
-.Rapp.history
-
-# Ignorer les fichiers temporaires RStudio
-*.Rproj
-*.Rproj.user
-
-# Ignorer les répertoires de cache de R
-*.RData
-#*.Rds
-
 # Ignorer les fichiers de log de Python
 *.log
 
