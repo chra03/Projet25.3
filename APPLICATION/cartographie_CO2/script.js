@@ -183,8 +183,7 @@ const CO2_FACTORS = {
 
     bus: 68,         // Bus urbain
     car_solo: 200,   // Voiture individuelle
-    //car_shared: 320,  // Voiture partagée (2 personnes)
-             // Marche
+    //car_shared: 0,  // Voiture partagée (2 personnes)
 };
 
 // Initialisation de l'application
@@ -407,9 +406,7 @@ function generateCO2EmissionsHTML(distanceKm) {
         train: Math.round(CO2_FACTORS.train * distanceKm),
         
         bus: Math.round(CO2_FACTORS.bus * distanceKm),
-        car_solo: Math.round(CO2_FACTORS.car_solo * distanceKm),
-        car_shared: Math.round(CO2_FACTORS.car_shared * distanceKm)
-        
+        car_solo: Math.round(CO2_FACTORS.car_solo * distanceKm)
     };
 
     // Déterminer le mode de transport le plus écologique (hors vélo et marche)
@@ -429,8 +426,7 @@ function generateCO2EmissionsHTML(distanceKm) {
        
         bus: 'Bus',
         car_solo: 'Voiture (seul)',
-        //car_shared: 'Voiture partagée',
-         
+
     };
 
     // Générer le HTML
@@ -451,15 +447,15 @@ function generateCO2EmissionsHTML(distanceKm) {
         // Déterminer la couleur de la barre
         let barColor;
         if (emission === 0) {
-            barColor = '#34a853'; // Vert pour zéro émission
-        } else if (emission < emissions.bus / 2) {
-            barColor = '#4285f4'; // Bleu pour faible émission
-        } else if (emission < emissions.car_shared) {
+            barColor = '#ffffff'; // blanc pour zéro émission
+        } else if (emission < emissions.bus) {
+            barColor = '#34a853'; // vert pour faible émission
+        } else if (emission < emissions.car_solo) {
             barColor = '#fbbc05'; // Jaune pour émission moyenne
         } else {
             barColor = '#ea4335'; // Rouge pour forte émission
         }
-
+        
         html += `
             <div class="co2-bar-container">
                 <div class="co2-bar-label">${modeNames[mode]}</div>
@@ -611,7 +607,7 @@ async function showEmbeddedDirections() {
 // Fonction pour obtenir le nom lisible du mode de transport
 function getTransportModeName(mode) {
     const modes = {
-        'transit': 'Transports en commun',
+        'transit': 'Transports en commun :Train',
         'driving': 'Voiture',
         'walking': 'Marche à pied',
         'bicycling': 'Vélo',
