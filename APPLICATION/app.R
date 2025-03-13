@@ -1,5 +1,5 @@
-# source("library.R")
-# source("import.R")
+source("library.R")
+source("import.R")
 
 # Thème personnalisé
 theme_perso <- create_theme(
@@ -51,8 +51,9 @@ ui <- dashboardPage(
       
      
       menuItem("Comparateur de CO2", tabName = "comparateur",icon = icon("globe")),
-      menuItem("Calculateur de gains", tabName = "calcul_gains" ,icon = icon("percent")),
-      menuItem("Qui sommes nous ?", tabName = "quisommesnous",icon = icon("question"))
+      menuItem("Calculateur de gains", tabName = "calcul_gains" ,icon = icon("percent"))
+      # ,
+      # menuItem("Qui sommes nous ?", tabName = "quisommesnous",icon = icon("question"))
     )
   ),
   dashboardBody(
@@ -242,20 +243,61 @@ h2 {
               div(
                 style = "position: relative; display: inline-block; width: 100%;border-radius: 15px;",
                 imageOutput("img_acc", width = "100%", height = "100%")),
-                HTML("
+              HTML("
     <div style='font-family: Verdana, sans-serif; line-height: 1.8; color: black; font-size: 16px;'>
       
-      <!-- Section principale -->
-      
-
       <!-- Introduction -->
-      <div style='margin-top: 30px; padding: 20px; border-radius: 15px; background: #ffffff; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); text-align: center;'>
-    <p style='text-align: justify; margin: 0; font-weight: bold;'>
-        liO trains vous révèle grâce à son outil d’analyse de données un ensemble d’informations détaillées sur vos voyages, comme leur impact environnemental, parce qu’un voyageur bien renseigné est un voyageur responsable !
-    </p>
-    </div></div>
-    
-") 
+      <div style='margin-top: 30px; padding: 20px; border-radius: 15px; background: #ffffff; 
+                  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); text-align: center;'>
+        <p style='text-align: justify; margin: 0; font-weight: bold;'>
+            liO trains vous révèle grâce à son outil d’analyse de données un ensemble d’informations détaillées sur vos voyages, 
+            comme leur impact environnemental, parce qu’un voyageur bien renseigné est un voyageur responsable !
+        </p>
+      </div>
+
+      <!-- Section des fonctionnalités -->
+      <div style='margin-top: 30px; display: flex; flex-wrap: wrap; justify-content: space-around;'>
+        
+        <!-- Impact environnemental -->
+        <div style='width: 45%; padding: 20px; border-radius: 15px; background: #f9f9f9; 
+                    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); text-align: center; margin-bottom: 20px;'>
+          <h3>🌍 Analysez l’impact environnemental de vos voyages</h3>
+          <p>Découvrez la consommation de CO₂ de vos trajets et comparez-les avec d'autres modes de transport grâce à des graphiques interactifs.</p>
+        </div>
+
+        <!-- Flux voyageurs -->
+        <div style='width: 45%; padding: 20px; border-radius: 15px; background: #f9f9f9; 
+                    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); text-align: center; margin-bottom: 20px;'>
+          <h3>🚆 Visualisez les flux de voyage sur les week-ends a 1€ et économie de CO2</h3>
+          <p>Explorez des cartes interactives pour comprendre les tendances de déplacement entre les gares d’Occitanie.</p>
+        </div>
+
+        <!-- Comparateur de CO2 -->
+        <div style='width: 45%; padding: 20px; border-radius: 15px; background: #f9f9f9; 
+                    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); text-align: center; margin-bottom: 20px;'>
+          <h3>🔍 Comparez les émissions de CO₂</h3>
+          <p>Sélectionnez un trajet et comparez son impact environnemental selon le mode de transport choisi.</p>
+        </div>
+
+        <!-- Calculateur d'économies -->
+        <div style='width: 45%; padding: 20px; border-radius: 15px; background: #f9f9f9; 
+                    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); text-align: center; margin-bottom: 20px;'>
+          <h3>💶💰 Calculez vos économies</h3>
+          <p>Découvrez combien vous économisez en prenant le train liO par rapport à d'autres modes de transport.</p>
+        </div>
+        
+      </div>
+
+      <!-- Message final -->
+      <div style='margin-top: 30px; padding: 20px; border-radius: 15px; background: #ffffff; 
+                  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); text-align: center;'>
+        <h3 style='color: #009688;'> Un voyageur informé est un voyageur responsable !</h3>
+        <p>Grâce à ces outils interactifs, prenez des décisions éclairées pour un mode de transport plus respectueux de la planète.</p>
+      </div>
+
+    </div>
+")
+              
 
               ),
       
@@ -649,13 +691,7 @@ server <- function(input, output) {
     
     return(df_cleaned)
   })
-  
-  # Réactivité pour charger la carte des régions de France
-  france <- ne_states(country = "France", returnclass = "sf") %>%
-    filter(!name %in% c("Guyane française", "Martinique", "Guadeloupe", "La Réunion", "Mayotte")) %>%
-    dplyr :: select(name, region, provnum_ne, geometry)
-  
-  occitanie <- france %>% filter(region == "Occitanie")
+
   
   # Créer la carte
   output$carte_test <- renderTmap({
@@ -664,7 +700,7 @@ server <- function(input, output) {
     trajets_sf <- data_carte() %>%
       rowwise() %>%
       mutate(geometry = list(st_linestring(matrix(c(Lon_Depart, Lat_Depart, Lon_Arrivee, Lat_Arrivee), ncol = 2, byrow = TRUE))))%>%
-      mutate(lwd_scaled = scales::rescale(`Nombre de personnes ayant effectué le trajet`, to = c(1, 10)))%>% # Normalisation de l'épaisseur%>%
+      # mutate(lwd_scaled = scales::rescale(`Nombre de personnes ayant effectué le trajet`, to = c(1, 10)))%>% # Normalisation de l'épaisseur%>%
       ungroup() %>%
       st_as_sf(crs = 4326)  # Définir le système de projection WGS84
     
@@ -682,13 +718,12 @@ server <- function(input, output) {
     
     tmap_mode("view")
     
-    carte <- tm_basemap("OpenStreetMap") +
-      tm_shape(occitanie) +
+    carte <- tm_shape(occitanie) +
       tm_polygons(col = "lightgray", alpha = 0.3, border.col = "black", title = "Occitanie") +
       tm_shape(trajets_sf) +
       tm_lines(
-        col = "#505050",  # Couleur selon le nombre de voyageurs
-        lwd = "Nombre de personnes ayant effectué le trajet",
+        col = "Nombre de personnes ayant effectué le trajet",  # Couleur selon le nombre de voyageurs
+        lwd = 3, palette = "Greens",
         legend.show = FALSE,
         title.col = "Nombre de voyageurs"
       ) +
@@ -707,7 +742,7 @@ server <- function(input, output) {
       ) +
       
       tm_layout(
-        title = "Carte des trajets à 1€ en Occitanie",legend.show = FALSE,
+        title = "Carte des trajets à 1€ en Occitanie",legend.outside = T
       )
     
     

@@ -77,13 +77,13 @@ df <- read.csv2(paste0(wba, "TAB_1E_POS.csv"), sep = ";", stringsAsFactors = FAL
   dplyr :: select(-Nombre.d.abonnements)%>%
   filter(NB_PERS > 1000)%>%
   rename("Nombre de personnes ayant effectué le trajet" = "NB_PERS") %>%
-  rename("Kg de CO2 émis par passagers par<br> Km en TER pour ce trajet" = "KCO2_TER_km_tot")%>%
-  rename("Kg de CO2 émis par passagers par <br>Km en Voiture pour ce trajet" = "KCO2_Voit_km_tot")%>%
-  rename("Kg de CO2 économisé par passagers par <br>Km grâce au Lio train pour ce trajet" = "ECO_CO2_km_pers")
+  rename("Kg de CO2 émis par passagers par Km en TER pour ce trajet" = "KCO2_TER_km_tot")%>%
+  rename("Kg de CO2 émis par passagers par Km en Voiture pour ce trajet" = "KCO2_Voit_km_tot")%>%
+  rename("Kg de CO2 économisé par passagers par Km grâce au Lio train pour ce trajet" = "ECO_CO2_km_pers")
 # names(df)
 df$MILLESIME <- as.character(df$MILLESIME )
 
-
+occitanie <- readRDS("SORTIE/occitanie.rds")
 
 ANNEE1E <- c(unique(df$MILLESIME))
 MOIS1E <- c(unique(df$MOIS))
