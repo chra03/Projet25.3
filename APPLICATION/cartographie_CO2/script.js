@@ -433,7 +433,7 @@ function generateCO2EmissionsHTML(distanceKm) {
     let html = `
         <div class="co2-section">
             <h3>Émissions de CO2 pour ce trajet</h3>
-            <p class="co2-intro">Comparez l'impact environnemental des différents modes de transport pour ce trajet de ${distanceKm.toFixed(1)} km.</p>
+            <p class="co2-intro">Comparez l'impact environnemental des différents modes de transport pour ce trajet de <strong>${distanceKm.toFixed(1)}km</strong></p>
             
             <div class="co2-bars">
     `;
@@ -475,8 +475,8 @@ function generateCO2EmissionsHTML(distanceKm) {
             
             <div class="co2-analysis">
                 <h4>Analyse comparative</h4>
-                <p>En choisissant le train plutôt que la voiture individuelle pour ce trajet, vous réduisez vos émissions de CO2 de <strong>${trainVsCar}%</strong>.</p>
-                <p>Le mode de transport le plus écologique pour ce trajet est <strong>${
+                <p>En choisissant le <strong>train</strong> plutôt que la <strong>voiture</strong> individuelle pour ce trajet, vous réduisez vos émissions de CO2 de <strong>${trainVsCar}%</strong>.</p>
+                <p>Le mode de transport le plus écologique pour ce trajet est le <strong>${
                     distanceKm <= 5 ? 'le vélo ou la marche' : 
                     modeNames[mostEcoMode]
                 }</strong>.</p>
