@@ -342,8 +342,8 @@ h2 {
               fluidRow(
                 # Première colonne pour les inputs
                 column(3,  # Largeur de la colonne pour les inputs (ajustez selon le besoin)
-                       selectInput("gareDEP", "Choix de la gare de départ", choices = unique(DATA_TEMPO23$Départ)),
-                       selectInput("gareARR", "Choix de la gare d'arrivée", choices = unique(DATA_TEMPO23$Arrivée))
+                       selectInput("gareDEP", "Choix de la gare de départ", choices = unique(DATA_TEMPO23$Départ), selected = "ENSEMBLE DES PARCOURS"),
+                       selectInput("gareARR", "Choix de la gare d'arrivée", choices = unique(DATA_TEMPO23$Arrivée), selected = , "ENSEMBLE DES PARCOURS")
                 ),
                 
                 # Deuxième colonne pour le graphique
