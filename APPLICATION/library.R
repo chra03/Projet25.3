@@ -1,9 +1,7 @@
 #Package nécessaire à l'utilisation des scripts#
-#install.packages(c("wesanderson","data.table", "stringr", "tibble", "tsibble", "lubridate", "ggplot2","survey","Hmisc","plotly","sf","ggsci",
-#"rainbow", "viridis", "rainbow", "tsibble", "DT", "ggplot2","survey","fresh","shiny","shinydashboardPlus","shinydashboard","questionr"))
-#install.packages("tmap")
-#nettoyage 
+#install.packages(c("wesanderson","data.table", "stringr", "tibble", "tsibble", "lubridate", "ggplot2","plotly","sf","tsibble", "DT", "ggplot2","fresh","shiny","shinydashboardPlus","shinydashboard","questionr","tmap"))
 
+#nettoyage 
 library("tmap")
 library("sf")
 library("stringi")
@@ -48,6 +46,3 @@ library(RColorBrewer)
 library(tidyverse)
 
 library("tmap")
-
-
-
