@@ -183,7 +183,7 @@ const CO2_FACTORS = {
 
     bus: 68,         // Bus urbain
     car_solo: 200,   // Voiture individuelle
-    car_shared: 320,  // Voiture partagée (2 personnes)
+    //car_shared: 320,  // Voiture partagée (2 personnes)
              // Marche
 };
 
@@ -429,7 +429,7 @@ function generateCO2EmissionsHTML(distanceKm) {
        
         bus: 'Bus',
         car_solo: 'Voiture (seul)',
-        car_shared: 'Voiture partagée',
+        //car_shared: 'Voiture partagée',
          
     };
 
