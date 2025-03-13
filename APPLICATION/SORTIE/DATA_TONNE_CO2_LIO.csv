@@ -1,13 +1,11 @@
-"TOTAL";"MILLESIME";"NOMBRE";"TYPE";"TONNNE_CO2_EMIS"
-"Distance totale annuelle en km";"X2023";1543277526;"Ensemble";37655,9716344
-"Distance totale annuelle en km";"X2024";1700541297;"Ensemble";41493,2076468
-"Distance totale annuelle en km";"X2023";527426944;"Jeunes";12869,2174336
-"Distance totale annuelle en km";"X2024";600444042;"Jeunes";14650,8346248
-"Distance totale annuelle en km";"X2023";422712145;"Fréquents";10314,176338
-"Distance totale annuelle en km";"X2024";375356230;"Fréquents";9158,692012
-"Distance totale annuelle en km";"X2023";1053667992;"Occasionnels";25709,4990048
-"Distance totale annuelle en km";"X2024";1167013440;"Occasionnels";28475,127936
-"Distance totale annuelle en km";"X2023";68309736;"+=";1666,7575584
-"Distance totale annuelle en km";"X2024";143000924;"+=";3489,2225456
-"Distance totale annuelle en km";"X2023";43857622;"WE 1€";1070,1259768
-"Distance totale annuelle en km";"X2024";53399052;"WE 1€";1302,9368688
+TOTAL;MILLESIME;NOMBRE;TYPE;TONNNE_CO2_EMIS
+Distance totale annuelle en km;2023;1543277526;Ensemble;37655,97163
+Distance totale annuelle en km;2024;1700541297;Ensemble;41493,20765
+Distance totale annuelle en km;2023;527426944;Jeunes;12869,21743
+Distance totale annuelle en km;2024;600444042;Jeunes;14650,83462
+Distance totale annuelle en km;2023;422712145;Fr�quents;10314,17634
+Distance totale annuelle en km;2024;375356230;Fr�quents;9158,692012
+Distance totale annuelle en km;2023;1053667992;Occasionnels;25709,499
+Distance totale annuelle en km;2024;1167013440;Occasionnels;28475,12794
+Distance totale annuelle en km;2023;68309736;+=;1666,757558
+Distance totale annuelle en km;2024;143000924;+=;3489,222546
