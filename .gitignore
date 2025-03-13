@@ -20,7 +20,7 @@
 
 # Ignorer les répertoires de cache de R
 *.RData
-*.Rds
+#*.Rds
 
 # Ignorer les fichiers de log de Python
 *.log
