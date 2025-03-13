@@ -1,5 +1,5 @@
-source("library.R")
-source("import.R")
+# source("library.R")
+# source("import.R")
 
 # Thème personnalisé
 theme_perso <- create_theme(
@@ -27,7 +27,7 @@ theme_perso <- create_theme(
 
 
 # Rendre le dossier externe accessible
-addResourcePath("cartographie", "../cartographie_CO2")
+addResourcePath("cartographie", "cartographie_CO2")
 
 
 # Interface UI
@@ -238,18 +238,25 @@ h2 {
               
               
               
-      tabItem(tabName = "accueil", h2("?????")
-              
-              
-              
-              
-              
-              
-              
-              
-              
-              
-              
+      tabItem(tabName = "accueil", 
+              div(
+                style = "position: relative; display: inline-block; width: 100%;border-radius: 15px;",
+                imageOutput("img_acc", width = "100%", height = "100%")),
+                HTML("
+    <div style='font-family: Verdana, sans-serif; line-height: 1.8; color: black; font-size: 16px;'>
+      
+      <!-- Section principale -->
+      
+
+      <!-- Introduction -->
+      <div style='margin-top: 30px; padding: 20px; border-radius: 15px; background: #ffffff; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); text-align: center;'>
+    <p style='text-align: justify; margin: 0; font-weight: bold;'>
+        liO trains vous révèle grâce à son outil d’analyse de données un ensemble d’informations détaillées sur vos voyages, comme leur impact environnemental, parce qu’un voyageur bien renseigné est un voyageur responsable !
+    </p>
+    </div></div>
+    
+") 
+
               ),
       
       
@@ -338,6 +345,16 @@ h2 {
 # Serveur
 server <- function(input, output) {
   
+  output$img_acc <- renderImage({
+    # Chemin du fichier image
+    list(
+      src = "IMAGES/img_acc.webp", 
+      contentType = "image/png",
+      alt = "ferr",
+      width = "100%",  # Modifier la largeur ici
+      height = 500   # Modifier la hauteur ici
+    )
+  }, deleteFile = FALSE)
   
   
   output$logolio <- renderImage({
@@ -646,7 +663,8 @@ server <- function(input, output) {
     # Créer les objets sf pour les trajets, gares de départ et d'arrivée
     trajets_sf <- data_carte() %>%
       rowwise() %>%
-      mutate(geometry = list(st_linestring(matrix(c(Lon_Depart, Lat_Depart, Lon_Arrivee, Lat_Arrivee), ncol = 2, byrow = TRUE)))) %>%
+      mutate(geometry = list(st_linestring(matrix(c(Lon_Depart, Lat_Depart, Lon_Arrivee, Lat_Arrivee), ncol = 2, byrow = TRUE))))%>%
+      mutate(lwd_scaled = scales::rescale(`Nombre de personnes ayant effectué le trajet`, to = c(1, 10)))%>% # Normalisation de l'épaisseur%>%
       ungroup() %>%
       st_as_sf(crs = 4326)  # Définir le système de projection WGS84
     
@@ -662,35 +680,34 @@ server <- function(input, output) {
     
     # Mode interactif pour la carte tmap
     
-    
+    tmap_mode("view")
     
     carte <- tm_basemap("OpenStreetMap") +
       tm_shape(occitanie) +
       tm_polygons(col = "lightgray", alpha = 0.3, border.col = "black", title = "Occitanie") +
       tm_shape(trajets_sf) +
       tm_lines(
-        col = "Nombre de personnes ayant effectué le trajet",  # Couleur selon le nombre de voyageurs
-        lwd = 2,
-        palette = "magma",
+        col = "#505050",  # Couleur selon le nombre de voyageurs
+        lwd = "Nombre de personnes ayant effectué le trajet",
+        legend.show = FALSE,
         title.col = "Nombre de voyageurs"
       ) +
       tm_shape(gares_depart_sf) +
       tm_dots(
-        col = "blue", size = 0.5, alpha = 0.8,
+        col = "#505050", size = 0.5, alpha = 0.8,
         id = "Depart",  # Afficher le nom de la gare au survol
         title = "Gares de départ"
       ) +
       
       tm_shape(gares_arrivee_sf) +
       tm_dots(
-        col = "blue", size = 0.5, alpha = 0.8,
+        col = "#505050", size = 0.5, alpha = 0.8,legend.show = FALSE,
         id = "Arrivee",  # Afficher le nom de la gare au survol
         title = "Gares d'arrivée"
       ) +
       
       tm_layout(
-        title = "Carte des trajets à 1€ en Occitanie",
-        legend.outside = TRUE
+        title = "Carte des trajets à 1€ en Occitanie",legend.show = FALSE,
       )
     
     
