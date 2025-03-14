@@ -1,0 +1,860 @@
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Interactif - Analyse des Communes d'Occitanie</title>
+    
+    <!-- CSS Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Plotly.js -->
+    <script src="https://cdn.plot.ly/plotly-2.16.1.min.js"></script>    
+    <!-- DataTables -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css">
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
+    
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            padding-top: 56px;
+        }
+        .navbar {
+            box-shadow: 0 2px 4px rgba(0,0,0,.1);
+        }
+        .card {
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,.05);
+            margin-bottom: 20px;
+            border: none;
+        }
+        .card-header {
+            background-color: #f8f9fa;
+            border-bottom: 1px solid rgba(0,0,0,.125);
+            font-weight: 600;
+        }
+        .nav-pills .nav-link.active {
+            background-color: #0d6efd;
+        }
+        .chart-container {
+            width: 100%;
+            height: 100%;
+            min-height: 400px;
+        }
+        .cluster-badge {
+            font-size: 0.8rem;
+            padding: 0.4rem 0.6rem;
+            border-radius: 50px;
+        }
+        .table-container {
+            overflow-x: auto;
+        }
+        #commune-search {
+            margin-bottom: 20px;
+        }
+        .footer {
+            margin-top: 50px;
+            padding: 20px 0;
+            background-color: #f8f9fa;
+            text-align: center;
+            border-top: 1px solid #e9ecef;
+        }
+        .cluster-card {
+            transition: transform 0.2s;
+        }
+        .cluster-card:hover {
+            transform: translateY(-5px);
+        }
+        .stats-value {
+            font-size: 2rem;
+            font-weight: bold;
+        }
+        .stats-label {
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+        #loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255,255,255,0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+        .spinner-border {
+            width: 3rem;
+            height: 3rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading spinner -->
+    <div id="loading">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Chargement...</span>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                <strong>LiO</strong> - Analyse Transport Occitanie
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#vue-ensemble">Vue d'ensemble</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#clusters">Clusters</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#recommandations">Recommandations</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#communes">Communes</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid py-4">
+        <!-- En-tête -->
+        <div class="row mb-4">
+            <div class="col-md-12">
+                <h1 class="display-5 mb-4">Analyse des besoins en transport des communes d'Occitanie</h1>
+                <p class="lead">
+                    Ce dashboard interactif présente une segmentation des communes d'Occitanie 
+                    selon leurs caractéristiques socio-économiques et leurs besoins en transport.
+                </p>
+            </div>
+        </div>
+
+        <!-- Vue d'ensemble -->
+        <section id="vue-ensemble" class="mb-5">
+            <h2 class="mb-4">Vue d'ensemble</h2>
+            
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-header">
+                            Segmentation des communes (Analyse en Composantes Principales)
+                        </div>
+                        <div class="card-body">
+                            <div id="pca-plot" class="chart-container"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-header">
+                            Statistiques générales
+                        </div>
+                        <div class="card-body">
+                            <div id="stats-table" class="chart-container"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="card mt-4">
+                        <div class="card-header">
+                            Distribution des tailles de communes
+                        </div>
+                        <div class="card-body">
+                            <div id="sizes-plot" class="chart-container"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Clusters -->
+        <section id="clusters" class="mb-5">
+            <h2 class="mb-4">Analyse des clusters</h2>
+            
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header">
+                            Profils des clusters
+                        </div>
+                        <div class="card-body">
+                            <div id="radar-plot" class="chart-container"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row mt-4">
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-header">
+                            Carte des communes par cluster
+                        </div>
+                        <div class="card-body">
+                            <div id="map-plot" class="chart-container"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-header">
+                            Filtrer par cluster
+                        </div>
+                        <div class="card-body">
+                            <div class="d-flex flex-wrap justify-content-center mb-3">
+                                <button class="btn btn-outline-primary m-1 cluster-filter" data-cluster="all">Tous</button>
+                                <button class="btn btn-outline-primary m-1 cluster-filter" data-cluster="0">Cluster 0</button>
+                                <button class="btn btn-outline-primary m-1 cluster-filter" data-cluster="1">Cluster 1</button>
+                                <button class="btn btn-outline-primary m-1 cluster-filter" data-cluster="2">Cluster 2</button>
+                                <button class="btn btn-outline-primary m-1 cluster-filter" data-cluster="3">Cluster 3</button>
+                                <button class="btn btn-outline-primary m-1 cluster-filter" data-cluster="4">Cluster 4</button>
+                            </div>
+                            
+                            <div class="mt-4">
+                                <h5>Caractéristiques du cluster sélectionné</h5>
+                                <div id="cluster-details" class="mt-3">
+                                    <p class="text-muted">Sélectionnez un cluster pour voir ses caractéristiques</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Recommandations -->
+        <section id="recommandations" class="mb-5">
+            <h2 class="mb-4">Recommandations d'infrastructure</h2>
+            
+            <div class="row">
+                <div class="col-md-12 mb-4">
+                    <div class="card">
+                        <div class="card-header">
+                            Recommandations par cluster
+                        </div>
+                        <div class="card-body">
+                            <div id="reco-table" class="chart-container"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row" id="cluster-cards">
+                <!-- Les cartes de recommandations seront générées dynamiquement ici -->
+            </div>
+        </section>
+
+        <!-- Communes représentatives et recherche -->
+        <section id="communes" class="mb-5">
+            <h2 class="mb-4">Communes représentatives et recherche</h2>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            Communes représentatives par cluster
+                        </div>
+                        <div class="card-body">
+                            <div id="communes-table" class="chart-container"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            Rechercher une commune
+                        </div>
+                        <div class="card-body">
+                            <div class="input-group mb-3">
+                                <input type="text" id="commune-search-input" class="form-control" placeholder="Nom de la commune...">
+                                <button class="btn btn-primary" type="button" id="search-btn">Rechercher</button>
+                            </div>
+                            
+                            <div id="commune-result" class="mt-3">
+                                <p class="text-muted">Saisissez le nom d'une commune pour voir ses caractéristiques</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row mt-4">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header">
+                            Explorer toutes les communes
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table id="communes-datatable" class="table table-striped table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Commune</th>
+                                            <th>Département</th>
+                                            <th>Population</th>
+                                            <th>Densité</th>
+                                            <th>Cluster</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- Les données seront chargées dynamiquement -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Pied de page -->
+    <footer class="footer">
+        <div class="container">
+            <p>Rapport généré le 13/03/2025 - Analyse des besoins en transport des communes d'Occitanie</p>
+            <p class="text-muted">LiO - Transport Occitanie</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript pour charger et manipuler les visualisations -->
+    <script>
+        // Fonction pour charger les figures Plotly depuis le JSON
+        async function loadPlotlyFigures() {
+    try {
+        // Vérifier si le fichier JSON existe
+        const jsonExists = await fileExists('plotly_figures.json');
+        if (!jsonExists) {
+            throw new Error('Le fichier plotly_figures.json nexiste pas.');
+        }
+
+        const response = await fetch('plotly_figures.json');
+        const figures = await response.json();
+        
+        // Charger chaque figure dans son conteneur
+        Plotly.newPlot('pca-plot', JSON.parse(figures.pca));
+        Plotly.newPlot('radar-plot', JSON.parse(figures.radar));
+        Plotly.newPlot('sizes-plot', JSON.parse(figures.sizes));
+        Plotly.newPlot('map-plot', JSON.parse(figures.map));
+        Plotly.newPlot('stats-table', JSON.parse(figures.stats));
+        Plotly.newPlot('reco-table', JSON.parse(figures.reco));
+        Plotly.newPlot('communes-table', JSON.parse(figures.communes));
+        
+        // Masquer le spinner de chargement
+        document.getElementById('loading').style.display = 'none';
+    } catch (error) {
+        console.error('Erreur lors du chargement des figures:', error);
+        document.getElementById('loading').innerHTML = '<div class="alert alert-danger">Erreur lors du chargement des données. Veuillez réessayer.</div>';
+    }
+}
+
+        // Charger les données des communes
+        async function loadCommunesData() {
+    try {
+        // Vérifier si le fichier CSV existe
+        const csvExists = await fileExists('communes_clusters.csv');
+        if (!csvExists) {
+            throw new Error('Le fichier communes_clusters.csv nexiste pas.');
+        }
+
+        const response = await fetch('communes_clusters.csv');
+        const csvText = await response.text();
+        
+        // Parser le CSV manuellement (simple)
+        const lines = csvText.split('\n');
+        const headers = lines[0].split(',');
+        
+        const communesData = [];
+        for (let i = 1; i < lines.length; i++) {
+            if (lines[i].trim() === '') continue;
+            
+            const values = lines[i].split(',');
+            const commune = {};
+            
+            for (let j = 0; j < headers.length; j++) {
+                commune[headers[j]] = values[j];
+            }
+            
+            communesData.push(commune);
+        }
+        
+        return communesData;
+    } catch (error) {
+        console.error('Erreur lors du chargement des données des communes:', error);
+        return [];
+    }
+}
+
+        // Fonction pour initialiser le tableau DataTables
+        function initDataTable(data) {
+            const tableBody = document.querySelector('#communes-datatable tbody');
+            
+            // Remplir le tableau avec les données
+            data.forEach(commune => {
+                const row = document.createElement('tr');
+                
+                row.innerHTML = `
+                    <td>${commune.NOM_COMMUNE}</td>
+                    <td>${commune.nom_departement}</td>
+                    <td>${Math.round(commune.P21_POP)}</td>
+                    <td>${Math.round(commune.densite * 10) / 10}</td>
+                    <td><span class="badge bg-primary">Cluster ${commune.cluster}</span></td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-primary view-commune" data-commune="${commune.NOM_COMMUNE}">
+                            Détails
+                        </button>
+                    </td>
+                `;
+                
+                tableBody.appendChild(row);
+            });
+            
+            // Initialiser DataTables
+            $('#communes-datatable').DataTable({
+                language: {
+                    url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/fr-FR.json'
+                },
+                pageLength: 10,
+                responsive: true
+            });
+            
+            // Ajouter des écouteurs d'événements pour les boutons de détails
+            document.querySelectorAll('.view-commune').forEach(button => {
+                button.addEventListener('click', function() {
+                    const communeName = this.getAttribute('data-commune');
+                    showCommuneDetails(communeName, data);
+                });
+            });
+        }
+
+        // Fonction pour afficher les détails d'une commune
+        function showCommuneDetails(communeName, data) {
+            const commune = data.find(c => c.NOM_COMMUNE === communeName);
+            
+            if (!commune) {
+                document.getElementById('commune-result').innerHTML = `
+                    <div class="alert alert-warning">
+                        Commune "${communeName}" non trouvée.
+                    </div>
+                `;
+                return;
+            }
+            
+            document.getElementById('commune-result').innerHTML = `
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        ${commune.NOM_COMMUNE} (${commune.nom_departement})
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p><strong>Population:</strong> ${Math.round(commune.P21_POP)} habitants</p>
+                                <p><strong>Densité:</strong> ${Math.round(commune.densite * 10) / 10} hab/km²</p>
+                                <p><strong>Taux de chômage:</strong> ${Math.round(commune.taux_chomage * 10) / 10}%</p>
+                            </div>
+                            <div class="col-md-6">
+                                <p><strong>Attractivité:</strong> ${Math.round(commune.attractivite * 100) / 100}</p>
+                                <p><strong>Centralité:</strong> ${Math.round(commune.centralite * 100) / 100}</p>
+                                <p><strong>Cluster:</strong> <span class="badge bg-primary">Cluster ${commune.cluster}</span></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Faire défiler jusqu'au résultat
+            document.getElementById('commune-result').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Fonction pour afficher les détails d'un cluster
+        function showClusterDetails(clusterId, data) {
+            if (clusterId === 'all') {
+                document.getElementById('cluster-details').innerHTML = `
+                    <p class="text-muted">Sélectionnez un cluster spécifique pour voir ses caractéristiques</p>
+                `;
+                return;
+            }
+            
+            // Filtrer les communes du cluster sélectionné
+            const clusterCommunes = data.filter(c => c.cluster === clusterId);
+            
+            if (clusterCommunes.length === 0) {
+                document.getElementById('cluster-details').innerHTML = `
+                    <div class="alert alert-warning">
+                        Aucune donnée disponible pour le cluster ${clusterId}.
+                    </div>
+                `;
+                return;
+            }
+            
+            // Calculer les moyennes
+            const avgPop = clusterCommunes.reduce((sum, c) => sum + parseFloat(c.P21_POP), 0) / clusterCommunes.length;
+            const avgDensite = clusterCommunes.reduce((sum, c) => sum + parseFloat(c.densite), 0) / clusterCommunes.length;
+            const avgChomage = clusterCommunes.reduce((sum, c) => sum + parseFloat(c.taux_chomage), 0) / clusterCommunes.length;
+            const avgAttractivite = clusterCommunes.reduce((sum, c) => sum + parseFloat(c.attractivite), 0) / clusterCommunes.length;
+            
+            document.getElementById('cluster-details').innerHTML = `
+                <div class="row">
+                    <div class="col-6 col-md-3 text-center mb-3">
+                        <div class="stats-value">${Math.round(avgPop)}</div>
+                        <div class="stats-label">Population moyenne</div>
+                    </div>
+                    <div class="col-6 col-md-3 text-center mb-3">
+                        <div class="stats-value">${Math.round(avgDensite)}</div>
+                        <div class="stats-label">Densité moyenne</div>
+                    </div>
+                    <div class="col-6 col-md-3 text-center mb-3">
+                        <div class="stats-value">${Math.round(avgChomage * 10) / 10}%</div>
+                        <div class="stats-label">Taux de chômage</div>
+                    </div>
+                    <div class="col-6 col-md-3 text-center mb-3">
+                        <div class="stats-value">${Math.round(avgAttractivite * 100) / 100}</div>
+                        <div class="stats-label">Attractivité</div>
+                    </div>
+                </div>
+                <div class="mt-3">
+                    <p><strong>${clusterCommunes.length}</strong> communes dans ce cluster</p>
+                    <p>Communes représentatives: 
+                        ${clusterCommunes.slice(0, 3).map(c => c.NOM_COMMUNE).join(', ')}...
+                    </p>
+                </div>
+            `;
+        }
+
+        // Fonction pour générer les cartes de recommandations
+        function generateRecommendationCards() {
+            // Cette fonction serait normalement alimentée par les données réelles
+            // Ici, nous créons des exemples statiques
+            const clusterCards = [
+                {
+                    cluster: 0,
+                    title: "Grandes agglomérations",
+                    description: "Centres urbains majeurs avec forte densité",
+                    recommendations: [
+                        { name: "Gare ferroviaire", value: "OUI - Ville importante" },
+                        { name: "Pôle d'échange multimodal", value: "OUI - Point de convergence" },
+                        { name: "Lignes de bus urbaines", value: "OUI - Réseau dense" },
+                        { name: "Fréquence recommandée", value: "HAUTE - Toutes les 10-15 min" }
+                    ],
+                    color: "primary"
+                },
+                {
+                    cluster: 1,
+                    title: "Villes moyennes",
+                    description: "Centres urbains secondaires",
+                    recommendations: [
+                        { name: "Gare ferroviaire", value: "POSSIBLE - Selon connexions" },
+                        { name: "Pôle d'échange multimodal", value: "OUI - Point de convergence" },
+                        { name: "Lignes de bus urbaines", value: "OUI - Réseau simple" },
+                        { name: "Fréquence recommandée", value: "MOYENNE - Toutes les 30 min" }
+                    ],
+                    color: "success"
+                },
+                {
+                    cluster: 2,
+                    title: "Communes périurbaines",
+                    description: "Zones résidentielles en périphérie",
+                    recommendations: [
+                        { name: "Gare ferroviaire", value: "NON - Taille insuffisante" },
+                        { name: "Pôle d'échange multimodal", value: "NON - Simple arrêt suffit" },
+                        { name: "Lignes de bus urbaines", value: "LIMITÉ - Axes principaux" },
+                        { name: "Fréquence recommandée", value: "MOYENNE - Toutes les 30 min" }
+                    ],
+                    color: "info"
+                },
+                {
+                    cluster: 3,
+                    title: "Communes rurales",
+                    description: "Zones peu denses avec activité agricole",
+                    recommendations: [
+                        { name: "Gare ferroviaire", value: "NON - Taille insuffisante" },
+                        { name: "Pôle d'échange multimodal", value: "NON - Simple arrêt suffit" },
+                        { name: "Transport à la demande", value: "OUI - Solution principale" },
+                        { name: "Fréquence recommandée", value: "BASSE - Quelques services par jour" }
+                    ],
+                    color: "warning"
+                },
+                {
+                    cluster: 4,
+                    title: "Communes isolées",
+                    description: "Zones très peu denses et éloignées",
+                    recommendations: [
+                        { name: "Gare ferroviaire", value: "NON - Taille insuffisante" },
+                        { name: "Transport à la demande", value: "OUI - Solution principale" },
+                        { name: "Lignes interurbaines", value: "OUI - Connexion simple" },
+                        { name: "Fréquence recommandée", value: "BASSE - Quelques services par jour" }
+                    ],
+                    color: "danger"
+                }
+            ];
+            
+            const cardsContainer = document.getElementById('cluster-cards');
+            
+            clusterCards.forEach(card => {
+                const cardHTML = `
+                    <div class="col-md-4 mb-4">
+                        <div class="card cluster-card">
+                            <div class="card-header bg-${card.color} text-white">
+                                <h5 class="mb-0">Cluster ${card.cluster} - ${card.title}</h5>
+                            </div>
+                            <div class="card-body">
+                                <p>${card.description}</p>
+                                
+                                <h6 class="mt-3">Recommandations:</h6>
+                                <ul class="list-group list-group-flush">
+                                    ${card.recommendations.map(rec => `
+                                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                                            ${rec.name}
+                                            <span class="badge bg-${card.color} rounded-pill">${rec.value}</span>
+                                        </li>
+                                    `).join('')}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                cardsContainer.innerHTML += cardHTML;
+            });
+        }
+
+        // Initialisation au chargement de la page
+        document.addEventListener('DOMContentLoaded', async function() {
+            // Charger les figures Plotly
+            loadPlotlyFigures();
+            
+            // Charger les données des communes
+            const communesData = await loadCommunesData();
+            
+            // Initialiser le tableau DataTables
+            if (communesData.length > 0) {
+                initDataTable(communesData);
+            }
+            
+            // Générer les cartes de recommandations
+            generateRecommendationCards();
+            
+            // Écouteurs d'événements pour les filtres de cluster
+            document.querySelectorAll('.cluster-filter').forEach(button => {
+                button.addEventListener('click', function() {
+                    const clusterId = this.getAttribute('data-cluster');
+                    
+                    // Mettre à jour l'apparence des boutons
+                    document.querySelectorAll('.cluster-filter').forEach(btn => {
+                        btn.classList.remove('active');
+                    });
+                    this.classList.add('active');
+                    
+                    // Afficher les détails du cluster
+                    showClusterDetails(clusterId, communesData);
+                    
+                    // Filtrer la visualisation PCA si possible
+                    try {
+                        const pcaPlot = document.getElementById('pca-plot');
+                        if (pcaPlot && clusterId !== 'all') {
+                            Plotly.restyle(pcaPlot, {
+                                'visible': [true, true, true, true, true]
+                            });
+                            
+                            const visibilityArray = Array(5).fill('legendonly');
+                            visibilityArray[parseInt(clusterId)] = true;
+                            
+                            Plotly.restyle(pcaPlot, {
+                                'visible': visibilityArray
+                            });
+                        } else if (pcaPlot) {
+                            Plotly.restyle(pcaPlot, {
+                                'visible': [true, true, true, true, true]
+                            });
+                        }
+                    } catch (e) {
+                        console.error("Erreur lors du filtrage du graphique PCA:", e);
+                    }
+                });
+            });
+            
+            // Écouteur pour la recherche de commune
+            document.getElementById('search-btn').addEventListener('click', function() {
+                const searchTerm = document.getElementById('commune-search-input').value.trim();
+                
+                if (searchTerm === '') return;
+                
+                // Recherche avec correspondance partielle
+                const results = communesData.filter(c => 
+                    c.NOM_COMMUNE.toLowerCase().includes(searchTerm.toLowerCase())
+                );
+                
+                if (results.length === 0) {
+                    document.getElementById('commune-result').innerHTML = `
+                        <div class="alert alert-warning">
+                            Aucune commune trouvée pour "${searchTerm}".
+                        </div>
+                    `;
+                } else if (results.length === 1) {
+                    // Si une seule commune correspond, afficher ses détails
+                    showCommuneDetails(results[0].NOM_COMMUNE, communesData);
+                } else {
+                    // Si plusieurs communes correspondent, afficher une liste
+                    let resultHTML = `
+                        <div class="card">
+                            <div class="card-header bg-primary text-white">
+                                ${results.length} communes trouvées pour "${searchTerm}"
+                            </div>
+                            <div class="card-body">
+                                <div class="list-group">
+                    `;
+                    
+                    results.slice(0, 10).forEach(commune => {
+                        resultHTML += `
+                            <button type="button" class="list-group-item list-group-item-action search-result" 
+                                    data-commune="${commune.NOM_COMMUNE}">
+                                ${commune.NOM_COMMUNE} (${commune.nom_departement}) - 
+                                ${Math.round(commune.P21_POP)} habitants
+                            </button>
+                        `;
+                    });
+                    
+                    if (results.length > 10) {
+                        resultHTML += `
+                            <div class="list-group-item text-muted">
+                                Et ${results.length - 10} autres résultats...
+                            </div>
+                        `;
+                    }
+                    
+                    resultHTML += `
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    
+                    document.getElementById('commune-result').innerHTML = resultHTML;
+                    
+                    // Ajouter des écouteurs pour les résultats de recherche
+                    document.querySelectorAll('.search-result').forEach(item => {
+                        item.addEventListener('click', function() {
+                            const communeName = this.getAttribute('data-commune');
+                            showCommuneDetails(communeName, communesData);
+                        });
+                    });
+                }
+            });
+            
+            // Permettre la recherche en appuyant sur Entrée
+            document.getElementById('commune-search-input').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    document.getElementById('search-btn').click();
+                }
+            });
+            
+            // Ajouter des fonctionnalités d'export
+            document.querySelectorAll('.plotly-graph').forEach(graph => {
+                const downloadBtn = document.createElement('button');
+                downloadBtn.className = 'btn btn-sm btn-outline-secondary download-btn';
+                downloadBtn.innerHTML = '<i class="bi bi-download"></i> Télécharger';
+                downloadBtn.style.position = 'absolute';
+                downloadBtn.style.top = '10px';
+                downloadBtn.style.right = '10px';
+                downloadBtn.style.zIndex = '100';
+                
+                downloadBtn.addEventListener('click', function() {
+                    const graphId = graph.id;
+                    Plotly.downloadImage(graphId, {
+                        format: 'png',
+                        width: 1200,
+                        height: 800,
+                        filename: `occitanie_transport_${graphId}`
+                    });
+                });
+                
+                graph.parentNode.style.position = 'relative';
+                graph.parentNode.appendChild(downloadBtn);
+            });
+        });
+        
+        // Fonction pour exporter les données en CSV
+        function exportTableToCSV(tableId, filename) {
+            const table = document.getElementById(tableId);
+            const rows = table.querySelectorAll('tr');
+            
+            let csv = [];
+            for (let i = 0; i < rows.length; i++) {
+                const row = [], cols = rows[i].querySelectorAll('td, th');
+                
+                for (let j = 0; j < cols.length; j++) {
+                    // Nettoyer le texte (supprimer les balises HTML, etc.)
+                    let data = cols[j].innerText.replace(/()/gm, ' ').replace(/(\s\s)/gm, ' ');
+                   // Échapper les guillemets
+                    data = data.replace(/"/g, '""');
+                    // Ajouter des guillemets autour des champs contenant des virgules
+                    row.push('"' + data + '"');
+                }
+                csv.push(row.join(','));
+            }
+            
+            // Télécharger le CSV
+            const csvString = csv.join('\n');
+            const a = document.createElement('a');
+            const blob = new Blob([csvString], {type: 'text/csv;charset=utf-8;'});
+            const url = URL.createObjectURL(blob);
+            
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
+
+
+
+        async function loadPlotlyFigures() {
+    try {
+        const response = await fetch('plotly_figures.json');
+        if (!response.ok) throw new Error('Network response was not ok');
+        const figures = await response.json();
+        
+        // Charger chaque figure dans son conteneur
+        Plotly.newPlot('pca-plot', JSON.parse(figures.pca));
+        Plotly.newPlot('radar-plot', JSON.parse(figures.radar));
+        Plotly.newPlot('sizes-plot', JSON.parse(figures.sizes));
+        Plotly.newPlot('map-plot', JSON.parse(figures.map));
+        Plotly.newPlot('stats-table', JSON.parse(figures.stats));
+        Plotly.newPlot('reco-table', JSON.parse(figures.reco));
+        Plotly.newPlot('communes-table', JSON.parse(figures.communes));
+        
+        // Masquer le spinner de chargement
+        document.getElementById('loading').style.display = 'none';
+    } catch (error) {
+        console.error('Erreur lors du chargement des figures:', error);
+        document.getElementById('loading').innerHTML = '<div class="alert alert-danger">Erreur lors du chargement des données. Veuillez réessayer.</div>';
+    }
+}
+
+
+// Fonction pour vérifier l'existence d'un fichier
+async function fileExists(url) {
+    const response = await fetch(url, { method: 'HEAD' });
+    return response.ok;
+}
+    </script>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
