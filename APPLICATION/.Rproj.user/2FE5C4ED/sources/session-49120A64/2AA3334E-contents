@@ -723,7 +723,7 @@ server <- function(input, output) {
       tm_shape(trajets_sf) +
       tm_lines(
         col = "Nombre de personnes ayant effectué le trajet",  # Couleur selon le nombre de voyageurs
-        lwd = 3, palette = "Greens",
+        lwd = 3, palette = "brewer.greens",
         legend.show = FALSE,
         title.col = "Nombre de voyageurs"
       ) +
