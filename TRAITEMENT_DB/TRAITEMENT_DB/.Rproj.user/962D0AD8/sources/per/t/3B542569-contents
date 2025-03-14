@@ -1,0 +1,1328 @@
+library(shiny)
+library(shinydashboard)
+library(plotly)
+library(shinythemes)
+library(shinyjs)
+
+ui <- fluidPage(
+  # Le bandeau avec le titre et les logos
+  useShinyjs(),
+  tags$header(
+    style = "background-color: #cf4f3d; color: white; padding: 20px 0;",
+    div(
+      style = "display: flex; justify-content: space-between; align-items: center; padding: 0 20px;",
+      # Titre principal
+      
+      div(
+        imageOutput("logoP", inline = TRUE),
+      
+      ),
+      
+      # Logo
+      div(
+        imageOutput("logo2", inline = TRUE),
+        tags$a(
+          href = "https://www.adil30.org/",  # Remplacez par l'URL de votre choix
+          target = "_blank",  # Ouvre le lien dans un nouvel onglet
+          imageOutput("logo", inline = TRUE)
+        )
+      )
+    )
+  ),
+  
+  # Navigation avec onglets (navbarPage)
+  navbarPage(
+    
+    id = "main_nav",
+    title = "",  # Le titre est déjà présent dans le bandeau
+    
+    # Onglet Accueil
+    tabPanel(
+      "Accueil", icon = icon("house"),
+             
+             fluidPage(
+               
+               tags$style(HTML("
+
+/* Style pour les boîtes */
+.box {
+  background-color: #ffffff;
+  border: 2px solid #575756;
+  border: none;
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+  transition: box-shadow 0.3s ease;
+}
+
+
+
+      
+
+
+
+.box:hover {
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+
+
+.box-primary > .box-header {
+  font-size: 18px;
+  color: white;
+  font-weight: 600;
+  padding: 10px;
+   border-radius: 20px 20px 0 0;
+  margin-bottom: 15px;
+  background: #575756;
+  
+ 
+}
+
+
+
+
+.box-body {
+  font-size: 14px;border: 2px solid #575756;border-radius: 20px;  /* Bordure des box */
+  color: #34495E;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* Style pour la navigation */
+  .navbar-nav {
+    display: flex;
+  
+    justify-content: center;
+    align-items: center;
+    gap: 20px; /* Espacement entre les boutons */
+  }
+
+
+
+
+
+
+
+/* Pour le Nav bar les onglets en haut */
+
+.navbar-nav > li > a {
+  background-color: #ffffff; /* Couleur de fond */
+    color: #34495E; /* Couleur du texte */
+    font-size: 18px;
+  font-weight: 500;
+  border-radius: 12px;
+  padding: 10px 20px; /* Espacement interne des boutons */
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Légère ombre pour effet de profondeur */
+    transition: background-color 0.3s ease, transform 0.2s ease; /* Animation au survol */
+}
+
+
+
+.navbar-nav > li > a:hover {
+  background-color: #ec6931; /* Couleur de fond au survol */
+    color: #ffffff; /* Couleur du texte au survol */
+    transform: translateY(-2px); /* Légère élévation au survol */
+}
+
+.navbar-nav > li.active > a {
+  font-weight: bold !important;
+  font-size: 18px !important;
+  background-color: #575756 !important;  /* couleur du bouton menu séléctionné (actif) */
+  color: white !important;
+  border-radius: 8px !important;
+  border-bottom: 3px solid #575756 !important;
+}
+
+
+
+
+.nav-tabs > li.active > a {
+  font-weight: bold !important;
+  font-size: 18px !important;
+  background-color: #575756 !important;    /* Couleur des onglets (themes, sous-thèmes) actifs */
+  color: white !important;
+  border-radius: 8px !important;
+  border-bottom: 3px solid #575756 !important;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* Personnalisation générale du corps */
+  body {
+    font-family: 'Arial', sans-serif;
+    
+    color: #2C3E50; /* Couleur texte générale */
+    margin: 0;
+    padding: 0;
+    line-height: 1.6;
+  }
+
+
+
+
+
+/* Personnalisation des options du dropdown */
+  .selectize-dropdown-content .option {
+    padding: 10px;
+    color: #34495E;
+      font-weight: bold;
+    background-color: #fff;
+      border-bottom: 1px solid #ecf0f1;
+  }
+.selectize-dropdown-content .option:hover {
+  background-color: #ec6931;
+    color: white;
+}
+
+/* Effet hover pour selectInput */
+  .selectize-control.single:hover {
+  font-weight: bold;
+    box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.2);
+  }
+
+
+
+
+
+
+/* Style pour les onglets */
+  .nav-tabs > li > a {
+    background-color: #ffffff;
+      color: #34495E;
+      font-size: 16px;
+    font-weight: 500; /* Moins gras pour un aspect plus professionnel */
+      border-radius: 8px;
+    padding: 10px 20px; /* Un peu plus d'espace autour du texte */
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.nav-tabs > li > a:hover {
+  background-color: #6A82FB;
+  color: #ffffff;
+  transform: translateY(-3px); /* Léger effet de survol */
+}
+
+.nav-tabs > li.active > a {
+  font-weight: bold;
+  font-size: 18px;
+  background-color: yellow;
+  color: white;
+  border-radius: 8px;
+  border-bottom: 3px solid #FF8C00; /* Couleur orange pour mettre en valeur */
+}
+
+
+
+
+
+
+
+
+/* Styles spécifiques pour les onglets de Maisons */
+.tab-containerMAI .nav-tabs > li > a {
+  background-color: #ffffff;
+  color: #34495E;
+  font-size: 14px;
+  padding: 12px 25px;
+  border-radius: 8px;
+}
+
+.tab-containerMAI .nav-tabs > li > a:hover {
+  background-color: #f1f1f1;
+  color: #34495E;
+}
+
+.tab-containerMAI .nav-tabs > li.active > a {
+  font-weight: bold;
+  color: #34495E;
+  border-bottom: 4px solid #8d2631; /* Trait plus épais pour l'onglet actif */
+  padding-bottom: 5px;
+  }
+
+/* Styles pour les onglets Appartements */
+  .tab-containerAPP .nav-tabs > li > a {
+    background-color: #ffffff;
+      color: #34495E;
+      font-size: 14px;
+    padding: 12px 25px;
+    border-radius: 8px;
+  }
+
+.tab-containerAPP .nav-tabs > li > a:hover {
+  background-color: #f1f1f1;
+    color: #34495E;
+}
+
+.tab-containerAPP .nav-tabs > li.active > a {
+  font-weight: bold;
+  color: #34495E;
+    border-bottom: 4px solid #324b4c; /* Trait plus épais pour l'onglet actif */
+  padding-bottom: 5px;
+}
+
+
+
+
+
+
+/* Style des titres h2 */
+  h2 {
+    position: relative;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+    font-size: 24px;
+    color: #34495E; /* Couleur plus foncée pour un look professionnel */
+      font-weight: 600; /* Plus épais pour les titres */
+  }
+
+
+
+
+
+
+/* Centrage des images */
+  #image_epci img {
+  display: block;
+  margin: 20px auto; /* Centrage avec un peu d'espacement autour */
+  max-width: 100%;
+  height: auto;
+}
+
+
+
+
+
+
+  
+      
+      
+      
+      
+      
+      
+      /* Style du footer */
+      .app-footer {
+         background-color: rgba(0.5, 0.5, 0.5, 0.5); /* Fond noir transparent */
+        color: #ffffff; /* Texte blanc */
+        text-align: center; /* Centrer le texte */
+        padding: 10px 20px; /* Espacement */
+        position: fixed; /* Fixer en bas de l'écran */
+        bottom: 0;
+        left: 0;
+       
+        font-size: 14px; /* Taille de police */
+        z-index: 1000; /* Toujours visible */
+      }
+      
+
+      
+
+      /* Pour le lien du logo  */
+      
+       a img:hover {
+    opacity: 0.8;
+    transition: opacity 0.3s;
+  }
+      
+      
+      
+      
+      
+      
+      
+      
+      
+
+      
+      
+    .radio-buttons-container {
+        background-color: #f8f9fa; /* Couleur de fond douce */
+         display: inline-block;
+         margin-right: 10px;  
+        padding: 0px;
+        margin-left: 20px; /* Décale les boutons vers la droite */
+        border-radius: 10px;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+      }
+      
+
+      .shiny-input-radiogroup label {
+        display: block;
+        padding: 3.4px;
+        font-weight : bold;
+        margin-left: 45px;
+        text-align: start;
+        border-radius: 5px;
+        background: white;
+        
+        cursor: pointer;
+        transition: all 0.3s;
+      }
+
+      
+      
+      /* Style pour le conteneur des boutons radio */
+  .radio-container {
+    background: white; /* Fond gris clair */
+    padding: 0px;
+    
+    border-radius: 10px;
+    box-shadow: 2px 2px 10px rgba(0,0,0,0.1);
+    font-family: 'Arial', sans-serif;
+  }
+      
+      
+      
+      
+
+
+  /* Effet au survol */
+  .shiny-input-radiogroup label:hover {
+    background: #575756;       /* Couleur quand on survol la liste des territoires */
+    color: white;
+    font-weight: bold;
+    transform: scale(1.05);
+  }
+
+
+
+
+
+
+
+  /* Style du conteneur de la carte */
+  .map-container {
+    border: 2px solid #575756; /* Couleur de la bordure de la carte  */
+    border-radius: 10px;
+    box-shadow: 2px 2px 10px rgba(0,0,0,0.1);
+    overflow: hidden;
+  }
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+
+                        ")),
+               
+            
+               # Conteneur principal pour l'image et le texte
+               div(
+                 # style = "position: relative; display: inline-block; width: 100%;",
+                 # imageOutput("img_acc", width = "100%", height = "100%"),  # Image responsive
+                 div(
+                   style = "
+
+    font-size: 25px; 
+    font-weight: bold; 
+    text-align: center; 
+    background-color : #E77F71; /* Fond noir transparent */
+    padding: 20px; 
+    broder-radius : 15px;
+    ",
+                   HTML("
+    
+      
+      <!-- Section principale -->
+      <div>
+        <h2 style='margin: 0; font-size: 36px; color: white; font-weight: bold;'>L'ESSENTIEL des chiffres de l’Habitat et du Logement</h2>
+        
+        <p style='margin: 15px 0; font-size: 18px;'>Bienvenue sur l'application de l’Observatoire du Plan Départemental de l’Habitat du Gard (ODH30)</p>
+      </div>
+                        ")
+                 )
+                 
+                 
+                 
+               ),
+               
+               # Section HTML avec un texte explicatif (exemple)
+               HTML("
+    <div style='font-family: Verdana, sans-serif; line-height: 1.8; color: black; font-size: 16px;'>
+      
+      <!-- Section principale -->
+      
+
+      <!-- Introduction -->
+      <div style='margin-top: 30px; padding: 20px; border-radius: 15px; background: #ffffff; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); text-align: center;'>
+    <p style='text-align: justify; margin: 0; font-weight: bold;'>
+        Que vous soyez élu, collectivité, acteur de l’habitat ou particulier, cet outil a été conçu pour vous accompagner dans vos décisions.
+    </p>
+    <p style='text-align: justify; margin: 0; margin-top: 10px; font-weight: bold;'>
+        Découvrez toutes les données et études pertinentes dans un format clair et accessible.
+    </p>
+</div>
+      
+      <!-- Ce que vous trouverez -->
+      <h3 style='color: #c64911; font-size: 24px; font-weight: bold; margin-top: 50px;'>¤ Ce que vous trouverez sur ce site</h3>
+      <div style='display: flex; flex-wrap: wrap; gap: 20px; margin-top: 20px;'>
+        <div style='flex: 1; min-width: 250px; background: #fefefe; border: 1px solid #ddd; padding: 20px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);'>
+          <h4 style='color: #c64911; font-size: 20px;'><u>Indicateurs actualisés</u></h4>
+          <p>Des <strong>indicateurs pertinents</strong> et à jour de l’habitat et du logement dans le Gard à l’échelle des intercommunalités.</p>
+        </div>
+        <div style='flex: 1; min-width: 250px; background: #fefefe; border: 1px solid #ddd; padding: 20px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);'>
+          <h4 style='color: #c64911; font-size: 20px;'><u>Graphiques téléchargeables</u></h4>
+          <p>Des graphiques pour réaliser vos études et diagnostics personnalisés.</p>
+        </div>
+        <div style='flex: 1; min-width: 250px; background: #fefefe; border: 1px solid #ddd; padding: 20px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);'>
+          <h4 style='color: #c64911; font-size: 20px;'><u>Études de l'ADIL</u></h4>
+          <p>L'accès à toutes les <strong>études réalisées</strong> par l’ADIL du Gard dans le cadre de l’ODH30.</p>
+        </div>
+      </div>
+
+      <!-- Évolution future -->
+      <h3 style='color: #c64911; font-size: 24px; font-weight: bold; margin-top: 50px;'>¤ Prochaines évolutions</h3>
+      <div style='margin-top: 20px; padding: 20px; border-radius: 15px; background: #ffffff; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);'>
+        <p>
+          Le site s’enrichira de nouvelles fonctionnalités en 2025, notamment :
+        </p>
+        <ul style='list-style-type: disc; margin-left: 20px;'>
+          <li>Tableaux de bord interactifs à l’échelle communale.</li>
+          <li>Comparateur de territoires.</li>
+          <li>Téléchargement de portraits de territoire personnalisés.</li>
+        </ul>
+      </div>
+
+      <!-- Comment utiliser -->
+      <h3 style='color: #c64911; font-size: 24px; font-weight: bold; margin-top: 30px;'>¤ Comment utiliser la plateforme</h3>
+      <div style='margin-top: 20px; padding: 20px; border-radius: 15px; background: #ffffff; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);'>
+        <p>
+          Explorez les chiffres clés de l’habitat et du logement grâce à des indicateurs organisés en quatre grands thèmes. 
+          Ces données sont accessibles à l’échelle du département ou des intercommunalités :
+        </p>
+        <ul style='list-style-type: disc; margin-left: 20px;'>
+          <li>
+            <strong>La démographie :</strong> Les indicateurs démographiques jouent un rôle essentiel dans la compréhension des dynamiques de l’habitat. Ils permettent d’analyser et quantifier les besoins en logement.
+          </li>
+          <li>
+            <strong>Le parc de logements :</strong> L’analyse du parc de logement constitue une étape incontournable pour appréhender les enjeux de l’habitat et du logement. Les indicateurs associés permettent de dresser un état des lieux précis et d’anticiper les évolutions nécessaires.
+          </li>
+          <li>
+            <strong>Le parc social :</strong> Axe central des politiques de l’habitat, les indicateurs relatifs à ce parc permettent d’en évaluer l’adéquation avec les besoins.
+          </li>
+          <li>
+            <strong>Les marchés :</strong> Ces indicateurs reflètent la capacité des ménages à devenir propriétaires, les difficultés d’accès au parc locatif privé, le foncier disponible et plus généralement l’attractivité des territoires.
+          </li>
+          <p> </p>
+        </ul>
+        
+       
+      </div>
+     <h3></h3>
+     <h3></h3>
+      
+      
+    </div>
+")
+             )
+    ),
+    
+    # Onglet Démographie
+  tabPanel( 
+    "Chiffres clés",icon = icon("chart-pie"),
+            
+            # attention là tu as juste souligner le text "selectionner ..." car le reste du code css se trouve dans cc_css
+            # compliquéeeee cette histoire haha !
+            h2(HTML(
+              "<span style='display: block; 
+                   position: relative; 
+                   padding-bottom: 10px;'>
+        1. Sélectionnez un territoire
+        <span style='display: block;
+                     width: 100%;
+                     height: 4px;
+                     background-color: #575756; /* Trait orange plus doux */
+                     position: absolute;
+                     bottom: 0;
+                     left: 0;'></span>
+     </span>"
+            )),
+    fluidRow(
+      column(3,
+             div(
+               class = "radio-container",
+             radioButtons("epci", "", choices = LIBEPCI)
+             )),
+              
+             
+              
+            # Conteneur centré pour l'image
+           
+                # imageOutput("image_epci", height = "auto", width = "100%"),
+      column(9,
+             div(
+               class = "map-container",
+                leafletOutput("map_adil", height = "600px",width = "auto")
+             )
+             ) 
+            ),
+          
+            
+           
+            h2(HTML(
+              "<span style='display: block; 
+                   position: relative; 
+                   padding-bottom: 10px;'>
+        2. Sélectionnez un thème, puis un sous-thème
+        <span style='display: block;
+                     width: 100%;
+                     height: 4px;
+                     background-color: #575756; /* Trait orange plus doux */
+                     position: absolute;
+                     bottom: 0;
+                     left: 0;'></span>
+     </span>"
+            )),
+            h2("¤ Thème"),
+     tabsetPanel(
+       h2("¤ Sous-thème"),
+       tabPanel(  div(
+         style = "
+      font-family: 'Verdana', sans-serif;",
+         HTML("<u>Démographie</u>")
+       ),
+       
+          
+      
+             # Tableau des onglets supplémentaires
+             tabsetPanel(
+               
+               tabPanel("Population",
+                        
+                        fluidRow(
+                          box(
+                            title = "ÉVOLUTION DE LA POPULATION",
+                            status = "primary",
+                            solidHeader = TRUE,
+                            width = 6,
+                            plotlyOutput("graphe1pop", height = "400px"),
+                            hr(),
+                            plotlyOutput("graphe2pop", height = "400px"),
+                            hr(),
+                            plotlyOutput("graphe3pop", height = "400px"),
+                            hr(),
+                            plotlyOutput("graphe7pop", height = "400px"),
+                            hr()
+                          ),
+                          box(
+                            title = paste0("CARACTÉRISTIQUES DE LA POPULATION ", "EN ", max(pop_genre_py$MILLESIME)),
+                            status = "primary",
+                            solidHeader = TRUE,
+                            width = 6,
+                            plotlyOutput("graphe4pop", height = "400px"),
+                            hr(),
+                            plotlyOutput("graphe5pop", height = "400px"),
+                            hr(),
+                            plotlyOutput("graphe6pop", height = "400px"),
+                            hr()
+                          )
+                        )
+               ),
+               
+               tabPanel("Niveau de vie",
+                        fluidRow(
+                          box(
+                            title = "ÉVOLUTION DU NIVEAU DE VIE",
+                            status = "primary",
+                            solidHeader = TRUE,
+                            width = 6,
+                            plotlyOutput("graphe1nv", height = "400px"),
+                            hr(),
+                            plotlyOutput("graphe2nv", height = "400px"),
+                            hr()
+                          ),
+                          box(
+                            title = paste0("CARACTÉRISTIQUES DU NIVEAU DE VIE ", "EN ",max(ruc_so$MILLESIME)),
+                            status = "primary",
+                            solidHeader = TRUE,
+                            width = 6,
+                            plotlyOutput("graphe3nv", height = "400px"),
+                            hr(),
+                            plotlyOutput("graphe4nv", height = "400px"),
+                            hr()
+                          )
+                        )
+               )
+             )
+    ),
+    
+    
+    
+    
+    
+    
+    
+    #__________________ Onglet Chiffres-clés - Logement ####
+    tabPanel(div(
+      style = "
+      font-family: 'Verdana', sans-serif;",
+      HTML("<u>Logement</u>")
+    ),
+      
+           
+            tabsetPanel(
+              tabPanel( "Parc de logements",
+                        fluidRow(
+                          
+                          box(
+                            title = "ÉVOLUTION DU PARC",
+                            status = "primary",
+                            solidHeader = TRUE,
+                            width = 6,
+                            plotlyOutput("graphe1log", height = "400px"),
+                            hr(),
+                            plotlyOutput("graphe2log", height = "400px"),
+                            hr(),
+                            plotlyOutput("graphe3log", height = "400px"),
+                            hr()
+                          ),
+                          box(
+                            title = paste0("CARACTÉRISTIQUES DU PARC", " EN ", max(rp_cons$MILLESIME)),
+                            status = "primary",
+                            solidHeader = TRUE,
+                            width = 6,
+                            plotlyOutput("graphe4log", height = "400px"),
+                            hr(),
+                            plotlyOutput("graphe5log", height = "400px"),
+                            hr()
+                            
+                            
+                          )
+                          
+                        )
+              ),
+              tabPanel("Dynamique de construction", 
+                       fluidRow(
+                         
+                         box(
+                           title = "HISTORIQUE DE LA CONSTRUCTION DE LOGEMENTS",
+                           status = "primary",
+                           solidHeader = TRUE,
+                           width = 6,
+                           plotlyOutput("graphe1dyn", height = "400px"),
+                           hr(),
+                           plotlyOutput("graphe2dyn", height = "400px"),
+                           hr()
+                           
+                         ),
+                         box(
+                           title = paste0("CARACTÉRISTIQUES DES LOGEMENTS AUTORISES", " EN ", max(cons_type$MILLESIME)),
+                           status = "primary",
+                           solidHeader = TRUE,
+                           width = 6,
+                           plotlyOutput("graphe3dyn", height = "400px"),
+                           hr(),
+                           plotlyOutput("graphe4dyn", height = "400px"),
+                           hr(),
+                           plotlyOutput("graphe5dyn", height = "400px"),
+                           hr(),
+                           plotlyOutput("graphe6dyn", height = "400px"),
+                           hr()
+                           
+                           
+                         )
+                         
+                       )
+                       
+              )
+            )
+    ),
+    #__________________  Onglet Chiffres-clés - Parc social ####
+    tabPanel( div(
+      style = "
+      font-family: 'Verdana', sans-serif;",
+      HTML("<u>Parc social</u>")
+    ),
+          
+            
+           
+            
+            tabsetPanel(
+              tabPanel("Parc",
+                       
+                       fluidRow(
+                         
+                         box(
+                           title = "ÉVOLUTION DU PARC SOCIAL PUBLIC",
+                           status = "primary",
+                           solidHeader = TRUE,
+                           width = 6,
+                           plotlyOutput("graphe1parc", height = "400px"),
+                           hr(),
+                           plotlyOutput("graphe2parc", height = "400px"),
+                           hr(),
+                           plotlyOutput("graphe3parc", height = "400px"), 
+                           hr(),
+                           plotlyOutput("graphe9parc", height = "400px"),
+                           hr()
+                         ),
+                         box(
+                           title = paste0("CARACTÉRISTIQUES DU PARC SOCIAL PUBLIC EN ", max(nb_log_historique$MILLESIME)),
+                           status = "primary",
+                           solidHeader = TRUE,
+                           width = 6,
+                           plotlyOutput("graphe4parc", height = "400px"),
+                           hr(),
+                           plotlyOutput("graphe5parc", height = "400px"),
+                           hr(),
+                           plotlyOutput("graphe6parc", height = "400px"),
+                           hr(),
+                           plotlyOutput("graphe7parc", height = "400px"),
+                           hr(),
+                           plotlyOutput("graphe8parc", height = "580px"),
+                           hr()
+                         )
+                         
+                       )
+              ),
+              
+              # tabPanel("Occupations", 
+              #          fluidRow(
+              #            column(width = 12, class = "col-sm-6 col-md-6 col-lg-6", plotlyOutput("graphe1occupation")),
+              #            column(width = 12, class = "col-sm-6 col-md-6 col-lg-6", plotlyOutput("graphe2occupation")),
+              #            column(width = 12, class = "col-sm-6 col-md-6 col-lg-6", plotlyOutput("graphe3occupation"))
+              #          ),
+              #          plotlyOutput("graphe4occupation")
+              # ),
+              
+              tabPanel("Demandes", 
+                       fluidRow(
+                         
+                         box(
+                           title = "ÉVOLUTION  DE LA DEMANDE DE LOGEMENTS SOCIAUX",
+                           status = "primary",
+                           solidHeader = TRUE,
+                           width = 6,
+                           plotlyOutput("graphe1dem", height = "400px"),
+                           hr(),
+                           plotlyOutput("graphe2dem", height = "400px"),
+                           hr()
+                           # ,
+                           # hr(),
+                           # plotlyOutput("graphe3dem", height = "400px")
+                         ),
+                         box(
+                           title = paste0("CARACTÉRISTIQUES DE LA DEMANDE DE LOGEMENTS SOCIAUX EN ", max(Dem_anciennete$MILLESIME)),
+                           status = "primary",
+                           solidHeader = TRUE,
+                           width = 6,
+                           plotlyOutput("graphe7dem", height = "400px"),
+                           hr(),
+                           plotlyOutput("graphe4dem", height = "400px"),
+                           hr(),
+                           plotlyOutput("graphe5dem", height = "400px"),
+                           hr(),
+                           plotlyOutput("graphe6dem", height = "400px"),
+                           hr()
+                           # hr(),
+                           
+                           # plotlyOutput("graphe8dem", height = "400px")
+                         )
+                         
+                       )
+              ),
+              
+              tabPanel("Attributions",
+                       fluidRow(
+                         
+                         box(
+                           title = "ÉVOLUTION DE L'ATTRIBUTION DE LOGEMENTS SOCIAUX",
+                           status = "primary",
+                           solidHeader = TRUE,
+                           width = 6,
+                           plotlyOutput("graphe1attr", height = "400px"),
+                           hr(),
+                           plotlyOutput("graphe2attr", height = "400px"),
+                           hr()
+                           # ,
+                           # hr(),
+                           # plotlyOutput("graphe3attr", height = "400px")
+                         ),
+                         box(
+                           title = paste0("CARACTÉRISTIQUES DE L'ATTRIBUTION DE LOGEMENTS SOCIAUX EN ", max(Attr_anciennete$MILLESIME)),
+                           status = "primary",
+                           solidHeader = TRUE,
+                           width = 6,
+                           
+                           plotlyOutput("graphe7attr", height = "400px"),
+                           hr(),
+                           plotlyOutput("graphe4attr", height = "400px"),
+                           hr(),
+                           plotlyOutput("graphe5attr", height = "400px"),
+                           hr(),
+                           plotlyOutput("graphe6attr", height = "400px"),
+                           hr()
+                           # hr(),
+                           # plotlyOutput("graphe7attr", height = "400px"),
+                           # hr(),
+                           # plotlyOutput("graphe8attr", height = "400px")
+                         )
+                         
+                       )
+                       
+                       
+              ),
+              tabPanel("Tension",
+                       
+                       fluidRow(
+                         
+                         box(
+                           title = "ÉVOLUTION  DE LA TENSION DU PARC SOCIAL",
+                           status = "primary",
+                           solidHeader = TRUE,
+                           width = 6,
+                           plotlyOutput("graphe1tens", height = "400px"),
+                           hr(),
+                           plotlyOutput("graphe2tens", height = "400px"),
+                           hr(),
+                           plotlyOutput("graphe3tens", height = "400px")
+                         ),
+                         box(
+                           title = paste0("CARACTÉRISTIQUES DE LA TENSION DU PARC SOCIAL EN ", max(Tens_histo$MILLESIME)),
+                           status = "primary",
+                           solidHeader = TRUE,
+                           width = 6,
+                           plotlyOutput("graphe4tens", height = "400px"),
+                           hr(),
+                           plotlyOutput("graphe5tens", height = "400px"),
+                           
+                           hr()
+                           # plotlyOutput("graphe6tens", height = "400px")
+                           
+                         )
+                         
+                       )
+                       
+                       
+                       
+              )
+            )),
+    
+    
+    #__________________  Onglet Chiffres-clés - Marché ####
+    tabPanel( div(
+      style = "
+      font-family: 'Verdana', sans-serif;",
+      HTML("<u>Marché</u>")
+    ),
+    
+            
+            tabsetPanel(
+              tabPanel("Marché immobilier",
+                       HTML("
+    <div style='font-family: Verdana, sans-serif; line-height: 1.8; color: black; font-size: 16px;'>
+
+
+      <div style='margin-top: 30px; padding: 20px; border-radius: 15px; background: #ffffff; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); text-align: center;'>
+    <p style='text-align: justify; margin: 0;'>
+        Les mutations abordées dans ce sous-thème concernent uniquement les ventes classiques.
+    </p>
+    </div>
+     </div>
+    "),
+                       hr(),
+                       fluidRow(
+                         
+                         box(
+                           title = "HISTORIQUE DES LOGEMENTS VENDUS",
+                           status = "primary",
+                           solidHeader = TRUE,
+                           width = 6,
+                           plotlyOutput("graphe0mar", height = "400px"),
+                           hr(),
+                           # hr(),
+                           tags$div(
+                             class = "tab-containerMAI",
+                             tabsetPanel(
+                               id = "tabs",  # L'attribut id peut être utilisé pour l'interaction
+                               
+                               tabPanel("Mutations", plotlyOutput("graphe1mar", height = "400px")),
+                               tabPanel("Prix", plotlyOutput("graphe12mar", height = "400px")),
+                               tabPanel("Prix m²", plotlyOutput("graphe13mar", height = "400px")), 
+                               tabPanel("Surfaces", plotlyOutput("graphe14mar", height = "400px")),
+                             )
+                           ),
+                           hr(),
+                           tags$div(
+                             class = "tab-containerAPP",
+                             tabsetPanel(
+                               id = "tabs", 
+                               tabPanel("Mutations", plotlyOutput("graphe2mar", height = "400px")),
+                               tabPanel("Prix", plotlyOutput("graphe22mar", height = "400px")),
+                               tabPanel("Prix m²", plotlyOutput("graphe23mar", height = "400px")), 
+                               tabPanel("Surfaces", plotlyOutput("graphe24mar", height = "400px")),
+                             )
+                           )
+                           # ,
+                           #  hr(),
+                           #  plotlyOutput("graphe3mar", height = "400px")
+                           #  # hr(),
+                           #  # plotlyOutput("graphe5mar", height = "400px")
+                         )
+                         ,
+                         box(
+                           title = paste0("CARACTÉRISTIQUES DES LOGEMENTS VENDUS EN ", max(MAI_TAILLE_PCONS$MILLESIME) ),
+                           status = "primary",
+                           solidHeader = TRUE,
+                           width = 6,
+                           plotlyOutput("graphe3mar", height = "400px"),
+                           hr(),
+                           plotlyOutput("graphe4mar", height = "400px"),
+                           hr()
+                           # plotlyOutput("graphe6mar", height = "400px")
+                         )
+                         
+                       )
+              ),
+              tabPanel("Marché des terrains à bâtir",
+                       HTML("
+    <div style='font-family: Verdana, sans-serif; line-height: 1.8; color: black; font-size: 16px;'>
+
+
+      <div style='margin-top: 30px; padding: 20px; border-radius: 15px; background: #ffffff; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); text-align: center;'>
+    <p style='text-align: justify; margin: 0;'>
+        Production en cours ...
+    </p>
+    </div>
+     </div>
+    "),
+                       hr() )
+              
+            )))), 
+  tabPanel(
+    "Publications",
+    icon = icon("book"),
+           # contenu du tabPanel ici...
+
+           HTML("
+    <div style='font-family: Verdana, sans-serif; line-height: 1.8; color: black; font-size: 16px;'>
+
+
+      <div style='margin-top: 30px; padding: 20px; border-radius: 15px; background: #ffffff; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); text-align: center;'>
+    <p style='text-align: justify; margin: 0;'>
+        Vous trouverez ci-dessous la présentation des études réalisées dans le cadre de l'Observatoire Départemental de l'Habitat.
+    </p>
+    <p style='text-align: justify; margin: 0; margin-top: 10px;'>
+       Pour consulter l'intégralité des études produites par l'ADIL, suivez <a href='https://www.adil30.org/publications/publications-de-ladil/' target='_blank'><u>ce lien</u></a>.
+    </p>
+    </div>
+
+
+                     <!-- Section : Les études thématiques -->
+                     <h3 style='color: #004080; margin-top: 20px;'><strong>Les études thématiques</strong></h3>
+                     
+                     <!-- Box 1 -->
+                     <div style='display: flex; align-items: flex-start; border: 1px solid #ddd; border-radius: 10px; padding: 15px; margin-bottom: 20px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);'>
+                     <div style='flex: 0.5;'>
+                     <img src='Image2023.jpg' alt='Phénomène Airbnb' style='width: 100%; height: auto;  border-radius: 20px; object-fit: cover;'>
+
+
+                     </div>
+                     <div style='flex: 2; padding-right: 20px;'>
+                     <h4 style='color: #004080; font-weight: bold;'><a href='http://data.adil30.org/Etudes_ADIL30/ODH/Etudes_thematiques_ODH/ADIL30_Etude2023_Airbnb_livret1.pdf' target='_blank'><u>Le phénomène Airbnb dans le Gard et le risque d'érosion du parc locatif privé</u></a></h4>
+          <p style='text-align: justify;'>
+            Publication 2023 - Livret 1 / 2
+<br><br>En 2016, le site Airbnb.com enregistrait 7 900 offres de locations de courte durée dans le Gard. En 2022, c’est 20 300 propositions qui s’affichaient sur la plateforme, couvrant 90% des communes du département et générant plus de 213 millions de revenus. Ce phénomène inédit, qui échappait encore il y a peu à la connaissance, peut être aujourd’hui observé pour en cerner les contours et en mesurer l’ampleur.
+
+<br><br>Dans un contexte de crise du logement, tout l’enjeu est d'assurer un équilibre entre les offres touristiques et classiques afin de conserver l'attractivité des territoires tout en limitant les risques d’érosion d’un parc locatif privé dont on connait le rôle fondamental dans la trajectoire résidentielle des ménages.
+
+<br><br>C'est l'objet de la présente étude, conduite en deux temps par l'ADIL du Gard dans le cadre de l'observatoire départemental de l'habitat :  apporter un éclairage sur un phénomène encore inexploré et imaginer des pistes de solutions pour contribuer à la réponse aux besoins en logement. 
+
+
+                   </p>
+                     </div>
+                     
+                     </div>
+                     
+                     <!-- Box 2 -->
+                     <div style='display: flex; align-items: flex-start; border: 1px solid #ddd; border-radius: 10px; padding: 15px; margin-bottom: 20px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);'>
+                     <div style='flex: 2; padding-right: 20px;'>
+                     <h4 style='color: #004080; font-weight: bold;'><a href='https://www.calameo.com/read/003334394a833f1b5abed' target='_blank'><u>Les besoins en logements sociaux dans le Gard</u></a></h4>
+                     <p style='text-align: justify;'>
+                     Publication de 2022 : De la demande exprimée à la demande invisible...
+<br><br>La capacité des territoires à répondre à la diversité des besoins en logements, et l’identification des secteurs où la production d’une offre nouvelle en logement social est essentielle, constituent ainsi le fil rouge des recherches menées dans le cadre de l’Observatoire du Plan Départemental de l’Habitat.
+<br><br>Afin de cerner les contours de cette diversité, il est apparu nécessaire de mieux comprendre la demande en logement social à l’échelle intra-communautaire, non seulement celle exprimée mais également celle dite « invisible » car non exprimée.
+<br><br>C’est l’objet de la présente étude destinée à identifier une demande en logement social potentiellement non exprimée sur des territoires peu équipés en offre sociale, ou peu visible au regard d’un volume moins important, et à connaître les communes qui nécessitent ou nécessiteront à moyen terme une réponse en offre de logement locatif adapté.
+
+                   </p>
+                     </div>
+                     <div style='flex: 0.5;'>
+                     <img src='Image2022.jpg' alt='Logements sociaux' style='width: 100%; height: auto;  border-radius: 20px; object-fit: cover;'>
+                     
+                     </div>
+                     </div>
+                     
+                     <!-- Box 3 -->
+                     <div style='display: flex; align-items: flex-start; border: 1px solid #ddd; border-radius: 10px; padding: 15px; margin-bottom: 20px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);'>
+                     <div style='flex: 0.5;'>
+                     <img src='Image2021.jpg' alt='Accession aidée' style='width: 100%; height: auto;  border-radius: 20px; object-fit: cover;'>
+                     
+                     </div>
+                     <div style='flex: 2; padding-right: 20px;'>
+                     <h4 style='color: #004080; font-weight: bold;'><a href='https://www.calameo.com/read/0033343942b94416f7f33' target='_blank'><u>Les effets de l’accession aidée sur l’habitat dans le Gard</u></a></h4>
+                     <p style='text-align: justify;'>
+                     Publication de 2021 : Analyse des Prêts à Taux Zéro distribués entre 2014 et 2019
+<br><br>Dans un contexte de taux d’intérêts bancaires historiquement bas, l’émission de Prêts à Taux Zéro reste relativement dynamique dans le Gard où, en moyenne, un millier de ménages y a recours chaque année.
+<br><br>Son impact, simplement incitatif ou réellement décisif, est difficile à mesurer sur la décision d’achat des accédants modestes. Un rapport d’évaluation, rédigé conjointement par l’Inspection Générale des Finances (IGF) et le Conseil Général de l’Environnement et du Développement Durable (CGEDD) en Octobre 2019,
+prend pourtant position en affirmant qu’en zone tendue, les accédants concernés auraient « sans doute » acquis un logement ancien, moins onéreux à l’achat qu’un logement neuf mais induisant un coût ultérieur de réhabilitation, ou bien auraient décalé dans le temps leur projet d’acquisition, les ménages aidés par le prêt 
+à taux zéro étant en moyenne plus jeunes de trois ans que l’ensemble des primo-accédants.
+<br><br>Il n’empêche que l’importante contribution financière de l’État, par le biais du PTZ, au financement des projets d’accession sociale à la propriété mérite de s’interroger sur les effets de ce prêt sur les territoires.
+<br><br>En 2020, l’observatoire du Plan Départemental de l’Habitat poursuivait la réflexion engagée depuis sa création en 2009 sur les enjeux locaux de l’habitat par une exploration des aides de l’ANAH et de ses effet sur l’amélioration du parc ancien.
+<br><br>Cette publication s’inscrit dans la continuité de cette réflexion en analysant l’impact que peut avoir localement le Prêt à Taux Zéro sur l’évolution du parc de logements, et plus largement, sur les effets de ce dispositif en matière d’étalement urbain et de diversification de l’offre en logement dans le département.
+
+                   </p>
+                     </div>
+                     
+                     </div>
+                     
+                     <!-- Box 4 -->
+                     <div style='display: flex; align-items: flex-start; border: 1px solid #ddd; border-radius: 10px; padding: 15px; margin-bottom: 20px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);'>
+                     <div style='flex: 2; padding-right: 20px;'>
+                     <h4 style='color: #004080; font-weight: bold;'><a href='http://data.adil30.org/Etudes_ADIL30/ODH/Etudes_thematiques_ODH/ADIL30_Etude2020_AidesANAHGard.pdf' target='_blank'><u>Les aides à l’amélioration de l’habitat dans le Gard</u></a></h4>
+                     <p style='text-align: justify;'>
+                     Publication 2020
+                     <br><br>L’observatoire de l’habitat a produit un indicateur départemental des loyers du parc privé en 2018, puis un comparatif des loyers du parc privé et du parc social en 2019. Ces deux dernières études ont permis de montrer que, dans certains territoires, l’accès au parc privé ne présentait pas de difficultés en termes de prix, les loyers étant proches de ceux du parc social,
+                     mais que l’enjeu reposait plutôt sur la qualité de l’habitat privé.
+<br>La suite logique de cette réflexion conduit à explorer la façon dont les politiques publiques de l’habitat ont contribué, par le biais des aides de l’ANAH, à améliorer la qualité du parc privé, en particulier dans les territoires où la réhabilitation des logements représente un fort enjeu. Cette exploration des aides financières délivrées par l’Agence entre 2014 et 2019 est l’objet de la présente étude.
+
+          </p>
+        </div>
+        <div style='flex: 0.5;'>
+          <img src='Image2020.jpg' alt='Amélioration de l’habitat' style='width: 100%; height: auto;  border-radius: 20px; object-fit: cover;'>
+          
+        </div>
+      </div>
+      
+      <!-- Box 5 -->
+      <div style='display: flex; align-items: flex-start; border: 1px solid #ddd; border-radius: 10px; padding: 15px; margin-bottom: 20px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);'>
+                   <div style='flex: 0.5;'>
+                     <img src='Image2019.jpg' alt='Loyers des parcs' style='width: 100%; height: auto;  border-radius: 20px; object-fit: cover;'>
+                     
+                     </div>
+                   <div style='flex: 2; padding-right: 20px;'>
+                     <h4 style='color: #004080; font-weight: bold;'><a href='http://data.adil30.org/Etudes_ADIL30/ODH/Etudes_thematiques_ODH/ADIL30_Etude2019_ComparatifLoyersSocialPrive.pdf' target='_blank'><u>Loyers des parcs social et privé dans le Gard : complémentarité ou concurrence ? </u></a></h4>
+                     <p style='text-align: justify;'>
+                     Publication 2019
+                     <br><br>Longtemps considéré comme une étape dans un modèle idyllique de trajectoire résidentielle dont l’aboutissement serait la propriété immobilière, le parc locatif privé remplit aujourd’hui d’autres fonctions qu’une fonction transitoire.
+<br><br>La fluidité qui le caractérise, contrairement au logement social, que l’on quitte assez rarement, ou à son propre logement, que l’on occupe plus longtemps, permet de répondre à bien des situations générées par les nouveaux modes de vie : mobilités professionnelles, décompositions et recompositions familiales, changements de niveau de vie.
+<br><br>Souvent occupé par choix, il garde néanmoins une fonction résiduelle pour ceux qui ne peuvent accéder ni au logement social par manque de place, ni à la propriété par manque de moyens. Son accessibilité, à la fois en termes d’offre disponible et de prix, est donc essentielle à l’équilibre des territoires.
+<br><br>L’évaluation de cette accessibilité fait l’objet de la présente publication qui tente de répondre, à l’échelle des intercommunalités qui composent le département du Gard, à plusieurs interrogations :
+<br><br>- Quelle est la situation réelle de l’offre locative dans sa globalité (parc social et parc privé) ?
+<br><br>- Faut-il produire du logement social dans tous les territoires, ou bien le parc privé remplit-il déjà, par endroits, une fonction sociale en proposant des loyers abordables, comparables à ceux du secteur social ?
+<br><br>- Peut-on repérer, par l’observation des prix des loyers à l’échelle départementale, des zones de marché homogènes
+
+                   </p>
+                     </div>
+                     
+                     </div>
+                     
+                     <!-- Box 6 -->
+                     <div style='display: flex; align-items: flex-start; border: 1px solid #ddd; border-radius: 10px; padding: 15px; margin-bottom: 20px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);'>
+                     <div style='flex: 2; padding-right: 20px;'>
+                     <h4 style='color: #004080; font-weight: bold;'><a href='http://data.adil30.org/Etudes_ADIL30/ODH/Etudes_thematiques_ODH/ADIL30_Etude2018_IndicateurD%C3%A9partementalDesLoyers.pdf' target='_blank'><u>L’indicateur départemental des loyers - IDL 01 </u></a></h4>
+                     <p style='text-align: justify;'>
+                     Publication 2018
+                  <br><br>Afin d’obtenir une visibilité sur l’ensemble des loyers du parc privé du département gardois, l’ADIL du Gard s’est appuyée sur les données de la CAF qui, grâce à un partenariat actif et opérant, s’est mobilisée pour participer à la réalisation de ce projet.
+<br><br>L’ADIL a pris en charge l’ensemble du processus conduisant aux résultats. Dans un premier temps, les données de la CAF ont été contrôlées, géolocalisées et enrichies à l’aide des bases fiscales, afin de renseigner le nombre de pièces et le type d’habitat ; elles ont été ensuite complétées et redressées à
+l’aide de données provenant de différentes sources (enquêtes réalisées auprès de consultants de l’ADIL, annonces internet et portefeuille de gestion de plusieurs agences immobilières)
+
+                   </p>
+                     </div>
+                     <div style='flex: 0.5;'>
+                     <img src='Image2018.jpg' alt='Indicateur des loyers' style='width: 100%; height: auto;  border-radius: 20px; object-fit: cover;'>
+                     
+                     </div>
+                     </div>
+                     
+                     </div>
+                           <!-- Section : Les Chiffres Clés -->
+      <h3 style='color: #004080; margin-top: 20px;'><strong>Les archives des chiffres clés</strong></h3>
+      <div style='display: flex; flex-wrap: wrap; gap: 15px; margin-top: 20px;'>
+        <div style='flex: 1; min-width: 250px; background-color: #F2F2F2; color: white; padding: 15px; border-radius: 10px;'>
+          <a href='https://www.calameo.com/read/003334394abf321dbb9ee' target='_blank' style='text-decoration: none; color: #004080; font-weight: bold;'><u>Chiffres clés 2022</u></a>
+        </div>
+        <div style='flex: 1; min-width: 250px; background-color: #F2F2F2; color: white; padding: 15px; border-radius: 10px;'>
+          <a href='https://www.calameo.com/read/00333439482200a538c90' target='_blank' style='text-decoration: none; color: #004080; font-weight: bold;'><u>Chiffres clés 2021</u></a>
+        </div>
+        <div style='flex: 1; min-width: 250px; background-color: #F2F2F2; color: white; padding: 15px; border-radius: 10px;'>
+          <a href='https://www.calameo.com/read/003334394d01917b47ee7' target='_blank' style='text-decoration: none; color: #004080; font-weight: bold;'><u>Chiffres clés 2020</u></a>
+        </div>
+        <div style='flex: 1; min-width: 250px; background-color: #F2F2F2; color: white; padding: 15px; border-radius: 10px;'>
+          <a href='https://www.calameo.com/read/003334394f70406b5d01b' target='_blank' style='text-decoration: none; color: #004080; font-weight: bold;'><u>Chiffres clés 2019</u></a>
+        </div>
+        <div style='flex: 1; min-width: 250px; background-color: #F2F2F2; color: white; padding: 15px; border-radius: 10px;'>
+          <a href='https://www.calameo.com/read/003334394fca3e1b24b0a' target='_blank' style='text-decoration: none; color: #004080; font-weight: bold;'><u>Chiffres clés 2017</u></a>
+          </div>
+        </div>
+         
+                     ")
+           
+           
+           
+           
+           
+           ),
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  tabPanel(
+    "Qui sommes nous",
+    icon = icon("circle-question"),
+           fluidPage(
+             HTML("
+             <div style='font-family: Verdana, sans-serif; line-height: 1.8; color: black; font-size: 16px;'>
+             <!-- Présentation de l’ODH30 -->
+      <h3 style='color: #c64911; font-size: 24px; font-weight: bold; margin-top: 30px;'>¤ L’Observatoire du Plan Départemental de l’Habitat du Gard</h3>
+      <div style='margin-top: 20px; padding: 20px; border-radius: 15px; background: #ffffff; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);'>
+        <p style='text-align: justify;'>
+          Créé en 2009 à l’initiative du Conseil Départemental et de l’État, l’ODH30 est un pilier du Plan Départemental de l’Habitat dans le Gard (PDH). Ce dispositif vise à constituer un socle de connaissances sur le fonctionnement, l’occupation et l’évolution des différents parcs de logements du département.
+          <br><br>Le suivi et l’animation de l’ODH30 sont confiés à l’Agence Départementale d’Information sur le Logement du Gard (ADIL 30). Sa mission est de collecter, analyser et diffuser les principaux indicateurs des tendances des marchés de l’habitat et du logement.
+        </p>
+      </div>
+
+      <!-- Objectifs en résumé -->
+      <h4 style='color: #c64911; font-size: 20px; margin-top: 20px;'><strong>¤ Objectifs en résumé</strong></h4>
+      <div style='display: flex; flex-wrap: wrap; gap: 20px; margin-top: 20px;'>
+        <div style='flex: 1; min-width: 250px; background-color: #c64911; color: white; padding: 20px; border-radius: 15px; text-align: center;'>
+          <strong>Diffuser des données fiables et exhaustives<br>sur l’habitat et le logement.</strong>
+        </div>
+        <div style='flex: 1; min-width: 250px; background-color: #c64911; color: white; padding: 20px; border-radius: 15px; text-align: center;'>
+          <strong>Favoriser une meilleure connaissance des enjeux locaux<br>en matière d’habitat et de logement.</strong>
+        </div>
+        <div style='flex: 1; min-width: 250px; background-color: #c64911; color: white; padding: 20px; border-radius: 15px; text-align: center;'>
+          <strong>Servir d’outil d’aide à la décision.</strong>
+        </div>
+      </div>
+    </div>
+    
+                  
+                  ")
+             
+             
+             
+           )
+           ),
+  
+  
+  
+  
+  tabPanel("Mentions légales",
+           icon = icon("info-circle"),
+           fluidPage(
+             HTML("<div style='font-family: Verdana, sans-serif; line-height: 1.8; color: black; font-size: 16px;'>
+        
+        <!-- En-tête -->
+        <div style='text-align: center; padding: 20px; background: #F2F2F2; color: white; border-radius: 10px;'>
+         
+          <p style='margin: 5px 0; font-size: 14px;color: black;'><u>Page mise à jour le 7 février 2025</u></p>
+        </div>
+
+        <!-- Éditeur -->
+        <h3 style='color: #c64911; font-size: 22px; margin-top: 30px;'><strong>¤ Éditeur de l'application</strong></h3>
+        <div style='border: 1px solid #ddd; padding: 15px; border-radius: 10px; background-color: #fefefe;'>
+        <p>Ce site est édité par :</p>
+          <p><strong>ADIL du Gard</strong> - Agence Départementale d'Information sur le Logement</p>
+          <p>Association loi 1901 constituée en septembre 1978</p>
+          <p><strong>SIRET :</strong> 314 686 932 00034</p>
+          <p><strong>Adresse :</strong> 7, rue Nationale - 30000 Nîmes</p>
+          <p><strong>Téléphone :</strong> 04 66 21 22 23</p>
+          <p><strong>Directrice de la publication :</strong> Catherine Calmet, Directrice</p>
+        </div>
+
+        <!-- Hébergement -->
+        <h3 style='color: #c64911; font-size: 22px; margin-top: 30px;'><strong>¤ Hébergement</strong></h3>
+        <div style='border: 1px solid #ddd; padding: 15px; border-radius: 10px; background-color: #fefefe;'>
+          <p>L'application est hébergée par <strong>RStudio Shinyapps</strong>.</p>
+        </div>
+
+        <!-- Propriété intellectuelle -->
+        <h3 style='color: #c64911; font-size: 22px; margin-top: 30px;'><strong>¤ Propriété intellectuelle</strong></h3>
+        <div style='border: 1px solid #ddd; padding: 15px; border-radius: 10px; background-color: #fefefe;'>
+          <p>Les contenus (textes, graphiques, données, images, logos, etc.) présents sur l'application sont protégés par les dispositions du Code de la propriété intellectuelle et
+          appartiennent à l’ADIL30, sauf mention contraire. Toute reproduction, représentation, modification ou exploitation, partielle ou totale, des contenus de l'application est strictement interdite sans l’autorisation préalable de l’ADIL30.</p>
+        </div>
+
+        <!-- Données personnelles -->
+        <h3 style='color: #c64911; font-size: 22px; margin-top: 30px;'><strong>¤ Données personnelles</strong></h3>
+        <div style='border: 1px solid #ddd; padding: 15px; border-radius: 10px; background-color: #fefefe;'>
+          <p>Aucune donnée personnelle n’est collectée par l’application sans le consentement explicite des utilisateurs. Si des données personnelles sont recueillies (par exemple, dans le cadre d’un formulaire de contact), elles sont traitées conformément au <strong>Règlement Général sur la Protection des Données (RGPD)</strong>.</p>
+          <p><br>Pour exercer vos droits (accès, rectification, suppression des données, etc.), vous pouvez contacter l'ADIL30 à l’adresse suivante : <a href='mailto:secretariat@adil30.org'>secretariat@adil30.org</a> </p>
+          <p> </p>
+        </div>
+
+        <!-- Limitation de responsabilité -->
+        <h3 style='color: #c64911; font-size: 22px; margin-top: 30px;'><strong>¤ Limitation de responsabilité</strong></h3>
+        <div style='border: 1px solid #ddd; padding: 15px; border-radius: 10px; background-color: #fefefe;'>
+          <p>L’ <strong>ADIL30</strong> met tout en œuvre pour garantir l’exactitude et la mise à jour des informations présentées dans l'application. Toutefois, elle ne saurait être tenue responsable des éventuelles erreurs ou omissions, ni des conséquences de leur utilisation</p>
+          <p></p>
+        </div>
+        
+        <h3></h3>
+
+      </div>"
+                  
+                  
+                  )
+           )
+           )
+    
+
+    
+
+  ),
+  
+  
+  div(
+    class = "app-footer",
+    HTML("ADIL 30 © 2025")
+  )
+)
+
+
